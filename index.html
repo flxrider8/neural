@@ -5,6 +5,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Neural — KI-News, live synchronisiert</title>
 <meta name="description" content="Die neuesten Nachrichten aus der Welt der Künstlichen Intelligenz. Automatisch synchronisiert, chronologisch sortiert." />
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Neural">
+<meta property="og:title" content="Neural — KI-News, live synchronisiert">
+<meta property="og:description" content="Die neuesten Nachrichten aus der Welt der Künstlichen Intelligenz. Automatisch synchronisiert, chronologisch sortiert.">
+<meta property="og:url" content="https://neural.flxrider8.workers.dev/">
+<meta property="og:image" content="https://neural.flxrider8.workers.dev/og-image.png">
+<meta property="og:image:secure_url" content="https://neural.flxrider8.workers.dev/og-image.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Neural — KI-News Index, live synchronisiert">
+<meta property="og:locale" content="de_DE">
+<meta property="og:locale:alternate" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Neural — KI-News, live synchronisiert">
+<meta name="twitter:description" content="Die neuesten Nachrichten aus der Welt der Künstlichen Intelligenz. Automatisch synchronisiert, chronologisch sortiert.">
+<meta name="twitter:image" content="https://neural.flxrider8.workers.dev/og-image.png">
+<meta name="twitter:image:alt" content="Neural — KI-News Index, live synchronisiert">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
@@ -498,6 +516,37 @@ body {
 }
 .site-footer a { color: var(--ink-2); text-decoration: none; }
 .site-footer a:hover { color: var(--accent); }
+.footer-links { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+
+/* ---------- Language filter ---------- */
+.feed-controls {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.lang-filter {
+  display: flex;
+  gap: 6px;
+}
+.lang-btn {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 7px 13px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+  min-height: 32px;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.lang-btn:hover { border-color: var(--accent); color: var(--ink); }
+.lang-btn.active { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.lang-btn.active:hover { border-color: var(--ink); }
 
 /* ---------- Focus states ---------- */
 a:focus-visible, button:focus-visible {
@@ -545,7 +594,14 @@ a:focus-visible, button:focus-visible {
   <section class="feed-section" id="feed" aria-labelledby="feedTitle">
     <div class="feed-header">
       <h2 id="feedTitle">Neueste Artikel</h2>
-      <span class="feed-meta" id="feedMeta"></span>
+      <div class="feed-controls">
+        <div class="lang-filter" role="group" aria-label="Nach Sprache filtern">
+          <button type="button" class="lang-btn active" data-lang="all" aria-pressed="true">Alle</button>
+          <button type="button" class="lang-btn" data-lang="de" aria-pressed="false">DE</button>
+          <button type="button" class="lang-btn" data-lang="en" aria-pressed="false">EN</button>
+        </div>
+        <span class="feed-meta" id="feedMeta"></span>
+      </div>
     </div>
     <ul class="feed-list" id="feedList" aria-live="polite" aria-busy="true">
       <!-- Skeletons, werden per JS ersetzt -->
@@ -560,7 +616,11 @@ a:focus-visible, button:focus-visible {
 
 <footer class="site-footer">
   <span>© 2026 Neural — Automatisch aggregierte KI-News</span>
-  <span>Quelle: <a href="https://currentsapi.services" rel="noopener">Currents API</a></span>
+  <nav class="footer-links" aria-label="Rechtliches">
+    <a href="impressum.html">Impressum</a>
+    <a href="datenschutz.html">Datenschutz</a>
+    <a href="https://currentsapi.services" rel="noopener">Quelle: Currents API</a>
+  </nav>
 </footer>
 
 <script>
@@ -586,11 +646,19 @@ document.documentElement.classList.add("js");
   const sentinel = document.getElementById("sentinel");
   const header = document.getElementById("siteHeader");
   const syncStatus = document.getElementById("syncStatus");
+  const langButtons = document.querySelectorAll(".lang-btn");
 
   let offset = 0;
   let loading = false;
   let done = false;
+  let totalKnown = false;
+  let currentLang = "all";
   const configured = !CONFIG.SUPABASE_URL.startsWith("DEINE");
+  const SKELETON_HTML = `
+    <li class="skeleton" aria-hidden="true"><span class="sk-line w-30"></span><span class="sk-line w-90"></span><span class="sk-line w-70"></span></li>
+    <li class="skeleton" aria-hidden="true"><span class="sk-line w-30"></span><span class="sk-line w-90"></span><span class="sk-line w-70"></span></li>
+    <li class="skeleton" aria-hidden="true"><span class="sk-line w-30"></span><span class="sk-line w-90"></span><span class="sk-line w-70"></span></li>
+  `;
 
   /* ---------- Header scroll state ---------- */
   const headerObserver = new IntersectionObserver(
@@ -691,9 +759,10 @@ document.documentElement.classList.add("js");
 
   /* ---------- Fetch from Supabase REST ---------- */
   async function fetchArticles(from, to) {
+    const langFilter = currentLang === "all" ? "" : `&language=eq.${currentLang}`;
     const url = `${CONFIG.SUPABASE_URL}/rest/v1/articles` +
       `?select=title,description,url,image_url,source,language,published_at` +
-      `&order=published_at.desc&offset=${from}&limit=${to - from + 1}`;
+      `&order=published_at.desc&offset=${from}&limit=${to - from + 1}${langFilter}`;
     const res = await fetch(url, {
       headers: {
         apikey: CONFIG.SUPABASE_ANON_KEY,
@@ -702,6 +771,24 @@ document.documentElement.classList.add("js");
     });
     if (!res.ok) throw new Error(`Supabase ${res.status}`);
     return res.json();
+  }
+
+  /* ---------- Gesamtanzahl sofort laden (unabhängig vom Nachladen) ---------- */
+  async function fetchTotalCount() {
+    const langFilter = currentLang === "all" ? "" : `&language=eq.${currentLang}`;
+    const url = `${CONFIG.SUPABASE_URL}/rest/v1/articles?select=id${langFilter}`;
+    const res = await fetch(url, {
+      headers: {
+        apikey: CONFIG.SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${CONFIG.SUPABASE_ANON_KEY}`,
+        Prefer: "count=exact",
+        Range: "0-0",
+      },
+    });
+    if (!res.ok) throw new Error(`Supabase ${res.status}`);
+    const range = res.headers.get("content-range");
+    const total = range ? parseInt(range.split("/")[1], 10) : NaN;
+    return Number.isFinite(total) ? total : null;
   }
 
   /* ---------- Demo data (solange Supabase nicht konfiguriert) ---------- */
@@ -732,7 +819,8 @@ document.documentElement.classList.add("js");
       if (configured) {
         batch = await fetchArticles(offset, offset + CONFIG.PAGE_SIZE - 1);
       } else {
-        batch = offset === 0 ? demoData() : [];
+        const pool = currentLang === "all" ? demoData() : demoData().filter((a) => a.language === currentLang);
+        batch = offset === 0 ? pool : [];
         syncStatus.textContent = "Demo-Modus";
       }
 
@@ -742,7 +830,9 @@ document.documentElement.classList.add("js");
       }
 
       if (batch.length === 0 && offset === 0) {
-        feedList.innerHTML = `<li class="feed-state"><strong>Noch keine Artikel</strong>Der erste Sync läuft in Kürze — schau gleich wieder vorbei.</li>`;
+        feedList.innerHTML = currentLang === "all"
+          ? `<li class="feed-state"><strong>Noch keine Artikel</strong>Der erste Sync läuft in Kürze — schau gleich wieder vorbei.</li>`
+          : `<li class="feed-state"><strong>Keine Artikel in dieser Sprache</strong>Versuch es mit einem anderen Filter.</li>`;
         done = true;
         return;
       }
@@ -752,7 +842,7 @@ document.documentElement.classList.add("js");
       feedList.appendChild(frag);
 
       offset += batch.length;
-      feedMeta.textContent = `${String(offset).padStart(3, "0")} Artikel`;
+      if (!totalKnown) feedMeta.textContent = `${String(offset).padStart(3, "0")} Artikel`;
       if (batch.length < CONFIG.PAGE_SIZE) done = true;
     } catch (err) {
       console.error("Feed-Fehler:", err);
@@ -773,6 +863,50 @@ document.documentElement.classList.add("js");
   );
   sentinelObserver.observe(sentinel);
 
+  /* ---------- Gesamtanzahl laden + anzeigen ---------- */
+  function loadTotalCount() {
+    if (configured) {
+      fetchTotalCount()
+        .then((total) => {
+          if (total !== null) {
+            totalKnown = true;
+            feedMeta.textContent = `${String(total).padStart(3, "0")} Artikel`;
+          }
+        })
+        .catch(() => {});
+    } else {
+      const count = currentLang === "all" ? demoData().length : demoData().filter((a) => a.language === currentLang).length;
+      totalKnown = true;
+      feedMeta.textContent = `${String(count).padStart(3, "0")} Artikel`;
+    }
+  }
+
+  /* ---------- Sprachfilter: Buttons ---------- */
+  function setLang(lang) {
+    if (lang === currentLang || loading) return;
+    currentLang = lang;
+    langButtons.forEach((btn) => {
+      const isActive = btn.dataset.lang === lang;
+      btn.classList.toggle("active", isActive);
+      btn.setAttribute("aria-pressed", String(isActive));
+    });
+
+    offset = 0;
+    done = false;
+    totalKnown = false;
+    feedList.innerHTML = SKELETON_HTML;
+    feedList.setAttribute("aria-busy", "true");
+    feedMeta.textContent = "";
+
+    loadTotalCount();
+    loadMore();
+  }
+
+  langButtons.forEach((btn) => {
+    btn.addEventListener("click", () => setLang(btn.dataset.lang));
+  });
+
+  loadTotalCount();
   loadMore();
 })();
 </script>
