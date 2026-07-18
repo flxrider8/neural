@@ -106,9 +106,12 @@ img { max-width: 100%; display: block; }
   -webkit-backdrop-filter: blur(16px) saturate(160%);
   backdrop-filter: blur(16px) saturate(160%);
   border-bottom: 1px solid transparent;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .site-header.scrolled { border-bottom-color: var(--line); box-shadow: 0 1px 0 rgba(0,0,0,0.02); }
+@media (max-width: 859px) {
+  .site-header.hide-nav { transform: translateY(-100%); }
+}
 
 .nav-inner {
   width: 100%; max-width: 1280px; margin: 0 auto;
@@ -634,6 +637,36 @@ document.documentElement.classList.add("js");
   scrim.addEventListener("click", closeMenu);
   menu.querySelectorAll("a").forEach((a) => a.addEventListener("click", closeMenu));
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeMenu(); });
+
+  /* ---------- Nav auf Mobile: beim Runterscrollen ausblenden, beim Hochscrollen wieder einblenden ---------- */
+  let lastY = window.scrollY;
+  let ticking = false;
+  const SCROLL_THRESHOLD = 6;
+
+  function updateHeaderVisibility() {
+    const y = window.scrollY;
+    const delta = y - lastY;
+
+    if (!menu.classList.contains("open")) {
+      if (y <= header.offsetHeight) {
+        header.classList.remove("hide-nav");
+      } else if (delta > SCROLL_THRESHOLD) {
+        header.classList.add("hide-nav");
+      } else if (delta < -SCROLL_THRESHOLD) {
+        header.classList.remove("hide-nav");
+      }
+    }
+
+    lastY = y;
+    ticking = false;
+  }
+
+  window.addEventListener("scroll", () => {
+    if (!ticking) {
+      requestAnimationFrame(updateHeaderVisibility);
+      ticking = true;
+    }
+  }, { passive: true });
 })();
 
 /* ---------- Feed (Supabase + Demo + Sprachfilter + Infinite Scroll) ---------- */
