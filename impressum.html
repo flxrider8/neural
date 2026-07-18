@@ -30,9 +30,20 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: var(--font); background: var(--bg); color: var(--ink); line-height: 1.6; -webkit-font-smoothing: antialiased; }
 .site-header {
-  display: flex; align-items: center; padding: 20px var(--container);
+  position: sticky; top: 0; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between; padding: 16px var(--container);
+  background: color-mix(in srgb, var(--bg) 85%, transparent);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--line);
 }
+.nav-back {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--mono); font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--ink-2); text-decoration: none;
+  padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line);
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.nav-back:hover { color: var(--accent); border-color: var(--accent); }
 .logo { display: flex; align-items: baseline; gap: 9px; font-weight: 800; font-size: 1rem; color: var(--ink); text-decoration: none; }
 .logo-mark {
   display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px;
@@ -72,6 +83,7 @@ a { color: var(--accent); }
     <span class="logo-mark" aria-hidden="true">N</span>
     Neural
   </a>
+  <a href="index.html" class="nav-back">← Zurück</a>
 </header>
 
 <main>
