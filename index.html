@@ -98,7 +98,7 @@ img { max-width: 100%; display: block; }
 
 /* ---------- Header / Nav ---------- */
 .site-header {
-  position: sticky; top: 0; z-index: 100;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
   height: var(--header-h);
   display: flex; align-items: center;
   padding: 0 var(--container);
@@ -112,6 +112,7 @@ img { max-width: 100%; display: block; }
 @media (max-width: 859px) {
   .site-header.hide-nav { transform: translateY(-100%); }
 }
+main { padding-top: var(--header-h); }
 
 .nav-inner {
   width: 100%; max-width: 1280px; margin: 0 auto;
