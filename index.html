@@ -257,49 +257,84 @@ body {
 .btn svg { transition: transform 0.2s ease; }
 .btn:hover svg { transform: translateY(2px); }
 
-/* ---------- Spec strip ---------- */
+/* ---------- Spec strip ----------
+   Mobile: läuft als Live-Ticker (passt zum "Live synchronisiert"-Puls im Header).
+   Ab 560px: klassisches Grid, ruhig und tabellarisch.
+*/
 .spec-strip {
-  display: grid;
-  grid-template-columns: 1fr;
   border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
   margin-top: clamp(40px, 7vh, 88px);
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 28px, #000 calc(100% - 28px), transparent);
+  mask-image: linear-gradient(to right, transparent, #000 28px, #000 calc(100% - 28px), transparent);
 }
-@media (min-width: 560px) {
-  .spec-strip { grid-template-columns: repeat(2, 1fr); }
+.spec-track {
+  display: flex;
+  width: max-content;
 }
-@media (min-width: 900px) {
-  .spec-strip { grid-template-columns: repeat(4, 1fr); }
+@media (prefers-reduced-motion: no-preference) {
+  .spec-track { animation: spec-marquee 26s linear infinite; }
+}
+@keyframes spec-marquee {
+  to { transform: translateX(-50%); }
 }
 .spec-item {
-  padding: 22px 0;
-  border-bottom: 1px solid var(--line);
-  border-left: 1px solid transparent;
-  transition: border-color 0.2s ease;
-}
-@media (min-width: 560px) {
-  .spec-item { padding-inline: clamp(18px, 3vw, 28px); }
-  .spec-item:nth-child(2n+1) { padding-left: 0; }
-  .spec-item:nth-child(2n) { border-left-color: var(--line); }
-}
-@media (min-width: 900px) {
-  .spec-item:nth-child(2n+1) { padding-left: clamp(18px, 2vw, 28px); border-left-color: var(--line); }
-  .spec-item:nth-child(2n) { border-left-color: var(--line); }
-  .spec-item:nth-child(4n+1) { padding-left: 0; border-left-color: transparent; }
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  padding: 18px 26px;
+  border-right: 1px solid var(--line);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 .spec-label {
-  display: block;
   font-family: var(--mono);
   font-size: 0.68rem;
   font-weight: 500;
   color: var(--ink-3);
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  margin-bottom: 10px;
 }
 .spec-value {
-  font-size: 1.02rem;
+  font-size: 0.95rem;
   font-weight: 600;
   letter-spacing: -0.01em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spec-strip { overflow-x: auto; -webkit-mask-image: none; mask-image: none; }
+  .spec-item[aria-hidden="true"] { display: none; }
+}
+
+@media (min-width: 560px) {
+  .spec-strip { overflow: visible; -webkit-mask-image: none; mask-image: none; border-bottom: none; }
+  .spec-track {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    width: auto;
+    animation: none;
+    transform: none;
+  }
+  .spec-item {
+    display: block;
+    white-space: normal;
+    padding: 22px clamp(18px, 3vw, 28px);
+    border-right: none;
+    border-bottom: 1px solid var(--line);
+    border-left: 1px solid transparent;
+  }
+  .spec-item[aria-hidden="true"] { display: none; }
+  .spec-item:nth-child(2n+1) { padding-left: 0; }
+  .spec-item:nth-child(2n) { border-left-color: var(--line); }
+  .spec-label { display: block; margin-bottom: 10px; }
+  .spec-value { font-size: 1.02rem; }
+}
+@media (min-width: 900px) {
+  .spec-track { grid-template-columns: repeat(4, 1fr); }
+  .spec-item:nth-child(2n+1) { padding-left: clamp(18px, 2vw, 28px); border-left-color: var(--line); }
+  .spec-item:nth-child(2n) { border-left-color: var(--line); }
+  .spec-item:nth-child(4n+1) { padding-left: 0; border-left-color: transparent; }
 }
 
 /* ---------- Feed ---------- */
@@ -584,10 +619,16 @@ a:focus-visible, button:focus-visible {
     </div>
 
     <div class="spec-strip">
-      <div class="spec-item"><span class="spec-label">Sprachen</span><span class="spec-value">DE / EN</span></div>
-      <div class="spec-item"><span class="spec-label">Sync-Intervall</span><span class="spec-value">Alle 30 Min.</span></div>
-      <div class="spec-item"><span class="spec-label">Quelle</span><span class="spec-value">Currents API</span></div>
-      <div class="spec-item"><span class="spec-label">Archiv</span><span class="spec-value">200 Artikel</span></div>
+      <div class="spec-track">
+        <div class="spec-item"><span class="spec-label">Sprachen</span><span class="spec-value">DE / EN</span></div>
+        <div class="spec-item"><span class="spec-label">Sync-Intervall</span><span class="spec-value">Alle 30 Min.</span></div>
+        <div class="spec-item"><span class="spec-label">Quelle</span><span class="spec-value">Currents API</span></div>
+        <div class="spec-item"><span class="spec-label">Archiv</span><span class="spec-value">200 Artikel</span></div>
+        <div class="spec-item" aria-hidden="true"><span class="spec-label">Sprachen</span><span class="spec-value">DE / EN</span></div>
+        <div class="spec-item" aria-hidden="true"><span class="spec-label">Sync-Intervall</span><span class="spec-value">Alle 30 Min.</span></div>
+        <div class="spec-item" aria-hidden="true"><span class="spec-label">Quelle</span><span class="spec-value">Currents API</span></div>
+        <div class="spec-item" aria-hidden="true"><span class="spec-label">Archiv</span><span class="spec-value">200 Artikel</span></div>
+      </div>
     </div>
   </section>
 
