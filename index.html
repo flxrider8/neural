@@ -403,8 +403,11 @@ main { padding-top: var(--header-h); }
   background: color-mix(in srgb, var(--accent) 6%, var(--bg-elev));
   border: 1px solid var(--line);
   font-size: 0.88rem; color: var(--ink-2); line-height: 1.55;
+  min-height: 20px;
 }
-.summary-box.loading { color: var(--ink-3); font-style: italic; }
+.summary-box.error { color: var(--accent); }
+.summary-skeleton { display: flex; flex-direction: column; gap: 9px; }
+.summary-skeleton .sk-line { height: 12px; }
 
 .js .card[data-reveal] { opacity: 0; transform: translateY(16px); }
 .js .card[data-reveal].revealed { opacity: 1; transform: translateY(0); transition: opacity 0.55s cubic-bezier(0.16,1,0.3,1), transform 0.55s cubic-bezier(0.16,1,0.3,1); }
@@ -807,6 +810,7 @@ document.documentElement.classList.add("js");
 
     let loaded = typeof a.summary === "string" && a.summary ? a.summary : null;
     let loading = false;
+    if (loaded) box.textContent = loaded;
 
     btn.addEventListener("click", async () => {
       const open = box.hidden;
@@ -815,19 +819,28 @@ document.documentElement.classList.add("js");
       if (!open || loaded || loading) return;
 
       loading = true;
-      box.textContent = "Lädt Zusammenfassung…";
-      box.classList.add("loading");
+      box.classList.remove("error");
+      box.innerHTML = `<div class="summary-skeleton"><span class="sk-line" style="width:95%"></span><span class="sk-line" style="width:88%"></span><span class="sk-line" style="width:60%"></span></div>`;
+
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 20000);
       try {
-        const res = await fetch(`${CONFIG.SYNC_WORKER_URL}/summarize?url=${encodeURIComponent(a.url)}`);
-        const data = await res.json();
-        if (!res.ok || !data.summary) throw new Error(data.error || `HTTP ${res.status}`);
+        const res = await fetch(`${CONFIG.SYNC_WORKER_URL}/summarize?url=${encodeURIComponent(a.url)}`, {
+          signal: controller.signal,
+        });
+        const data = await res.json().catch(() => null);
+        if (!res.ok || !data || !data.summary) throw new Error(data?.error || `HTTP ${res.status}`);
         loaded = data.summary;
         box.textContent = loaded;
-        box.classList.remove("loading");
       } catch (err) {
-        box.textContent = "Zusammenfassung konnte gerade nicht geladen werden.";
+        const timedOut = err && err.name === "AbortError";
+        box.textContent = timedOut
+          ? "Das dauert gerade zu lange — bitte nochmal versuchen."
+          : "Zusammenfassung konnte gerade nicht geladen werden.";
+        box.classList.add("error");
         console.error("Summary-Fehler:", err);
       } finally {
+        clearTimeout(timeout);
         loading = false;
       }
     });
