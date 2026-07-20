@@ -388,6 +388,24 @@ main { padding-top: var(--header-h); }
 .card:hover h3 { color: var(--accent); }
 .card-desc { font-size: 0.92rem; color: var(--ink-2); line-height: 1.55; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
+.card-actions { padding: 0 24px 22px; }
+.summary-toggle {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-family: var(--mono); font-size: 0.74rem; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--accent); background: none; border: none; cursor: pointer; padding: 6px 0;
+  min-height: 32px;
+}
+.summary-toggle svg { transition: transform 0.25s ease; flex-shrink: 0; }
+.summary-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+.summary-box {
+  margin-top: 8px; padding: 14px 16px; border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--accent) 6%, var(--bg-elev));
+  border: 1px solid var(--line);
+  font-size: 0.88rem; color: var(--ink-2); line-height: 1.55;
+}
+.summary-box.loading { color: var(--ink-3); font-style: italic; }
+
 .js .card[data-reveal] { opacity: 0; transform: translateY(16px); }
 .js .card[data-reveal].revealed { opacity: 1; transform: translateY(0); transition: opacity 0.55s cubic-bezier(0.16,1,0.3,1), transform 0.55s cubic-bezier(0.16,1,0.3,1); }
 @media (prefers-reduced-motion: reduce) { .js .card[data-reveal] { opacity: 1; transform: none; } }
@@ -487,9 +505,9 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 
 <main>
   <section class="hero" aria-labelledby="heroTitle">
-    <span class="hero-kicker"><span class="dot" aria-hidden="true"></span>KI-News Index: Deutsch &amp; Englisch</span>
+    <span class="hero-kicker"><span class="dot" aria-hidden="true"></span>KI-News Index — Deutsch &amp; Englisch</span>
     <h1 id="heroTitle">Was in der KI-Welt passiert, <em>lückenlos erfasst.</em></h1>
-    <p>Die neuesten Artikel aus der Welt der Künstlichen Intelligenz automatisch gesammelt, KI-kuratiert und immer aktuell.</p>
+    <p>Die neuesten Artikel aus der Welt der Künstlichen Intelligenz — automatisch gesammelt, KI-kuratiert und immer aktuell.</p>
 
     <div class="hero-actions">
       <a href="#feed" class="btn btn-primary">
@@ -598,6 +616,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 const CONFIG = {
   SUPABASE_URL: "https://xbrxhzampuhjyvyhntiv.supabase.co",
   SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhicnhoemFtcHVoanl2eWhudGl2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwMzY2OTEsImV4cCI6MjA5OTYxMjY5MX0.7aq734Vwp-nKzNsLvQPgYAMpWtLp6oGDzrVCjBhi-fc",
+  SYNC_WORKER_URL: "https://neural-sync.flxrider8.workers.dev",
   PAGE_SIZE: 12,
 };
 
@@ -767,14 +786,60 @@ document.documentElement.classList.add("js");
 
     link.appendChild(body);
     li.appendChild(link);
+    li.appendChild(renderSummaryToggle(a));
     revealObserver.observe(li);
     return li;
+  }
+
+  function renderSummaryToggle(a) {
+    const actions = document.createElement("div");
+    actions.className = "card-actions";
+
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "summary-toggle";
+    btn.setAttribute("aria-expanded", "false");
+    btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> KI-Zusammenfassung`;
+
+    const box = document.createElement("div");
+    box.className = "summary-box";
+    box.hidden = true;
+
+    let loaded = typeof a.summary === "string" && a.summary ? a.summary : null;
+    let loading = false;
+
+    btn.addEventListener("click", async () => {
+      const open = box.hidden;
+      box.hidden = !open;
+      btn.setAttribute("aria-expanded", String(open));
+      if (!open || loaded || loading) return;
+
+      loading = true;
+      box.textContent = "Lädt Zusammenfassung…";
+      box.classList.add("loading");
+      try {
+        const res = await fetch(`${CONFIG.SYNC_WORKER_URL}/summarize?url=${encodeURIComponent(a.url)}`);
+        const data = await res.json();
+        if (!res.ok || !data.summary) throw new Error(data.error || `HTTP ${res.status}`);
+        loaded = data.summary;
+        box.textContent = loaded;
+        box.classList.remove("loading");
+      } catch (err) {
+        box.textContent = "Zusammenfassung konnte gerade nicht geladen werden.";
+        console.error("Summary-Fehler:", err);
+      } finally {
+        loading = false;
+      }
+    });
+
+    actions.append(btn, box);
+    return actions;
   }
 
   async function fetchArticles(from, to) {
     const langFilter = currentLang === "all" ? "" : `&language=eq.${currentLang}`;
     const url = `${CONFIG.SUPABASE_URL}/rest/v1/articles` +
-      `?select=title,description,url,image_url,source,language,published_at` +
+      `?select=title,description,url,image_url,source,language,published_at,summary` +
       `&order=published_at.desc&offset=${from}&limit=${to - from + 1}${langFilter}`;
     const res = await fetch(url, {
       headers: { apikey: CONFIG.SUPABASE_ANON_KEY, Authorization: `Bearer ${CONFIG.SUPABASE_ANON_KEY}` },
