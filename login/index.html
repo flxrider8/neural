@@ -288,7 +288,6 @@ a:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid 
     <!-- VIEW: Dashboard -->
     <section class="view" id="view-dashboard">
       <div class="dash-header">
-        <div class="dash-avatar" id="dashAvatar">?</div>
         <div>
           <div class="dash-name" id="dashName">—</div>
           <span class="dash-role" id="dashRole" style="display:none;">Admin</span>
@@ -532,7 +531,6 @@ dashAvatarFile.addEventListener("change", () => {
 
 function renderDashboard(profile, user) {
   document.getElementById("dashName").textContent = profile?.display_name || user.email;
-  renderAvatarInto(document.getElementById("dashAvatar"), profile?.avatar_url, profile?.display_name);
   renderAvatarInto(dashAvatarPreview, profile?.avatar_url, profile?.display_name);
   document.getElementById("dashDisplayName").value = profile?.display_name || "";
   dashAvatarUrl.value = profile?.avatar_url || "";
@@ -562,10 +560,9 @@ dashboardForm.addEventListener("submit", async (e) => {
       avatar_url: avatarUrl,
     }).eq("id", user.id);
     if (error) throw error;
-    const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single();
-    renderDashboard(profile, user);
-    setSuccess(dashboardSuccess, "Gespeichert.");
-    dashAvatarFile.value = "";
+    setSuccess(dashboardSuccess, "Gespeichert. Du wirst weitergeleitet…");
+    setTimeout(() => { window.location.href = "../index.html"; }, 800);
+    return;
   } catch (err) {
     setError(dashboardError, translateError(err));
   } finally {
