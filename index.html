@@ -312,7 +312,10 @@ main { padding-top: var(--header-h); }
     margin: 0 calc(var(--container) * -1);
     -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--container), #000 calc(100% - var(--container)), transparent);
     mask-image: linear-gradient(to right, transparent, #000 var(--container), #000 calc(100% - var(--container)), transparent);
+    touch-action: pan-y;
+    cursor: grab;
   }
+  .stats.dragging { cursor: grabbing; }
   .stats-track {
     display: flex; gap: 12px; width: max-content;
     padding-inline: var(--container);
@@ -729,6 +732,60 @@ document.documentElement.classList.add("js");
       ticking = true;
     }
   }, { passive: true });
+})();
+
+/* ---------- Stat-Karten: Ticker per Finger ziehen (Mobile) ----------
+   Beim Ziehen folgt das Band dem Finger. Beim Loslassen läuft die
+   Auto-Animation einfach von der (pausierten) aktuellen Position aus
+   weiter — kein Sprung, kein manuelles Zurückanimieren nötig.
+*/
+(() => {
+  "use strict";
+  const wrap = document.querySelector(".stats");
+  const track = document.querySelector(".stats-track");
+  if (!wrap || !track) return;
+
+  let dragging = false;
+  let startX = 0;
+  let baseX = 0;
+
+  function currentTranslateX() {
+    const t = getComputedStyle(track).transform;
+    if (t === "none") return 0;
+    const match = t.match(/matrix(3d)?\(([^)]+)\)/);
+    if (!match) return 0;
+    const values = match[2].split(", ").map(Number);
+    return match[1] ? values[12] : values[4];
+  }
+
+  function onDown(e) {
+    if (getComputedStyle(track).animationName === "none") return; // Desktop-Grid: kein Ticker aktiv
+    dragging = true;
+    startX = e.clientX;
+    baseX = currentTranslateX();
+    track.getAnimations().forEach((a) => a.pause());
+    wrap.classList.add("dragging");
+    wrap.setPointerCapture(e.pointerId);
+  }
+
+  function onMove(e) {
+    if (!dragging) return;
+    const dx = e.clientX - startX;
+    track.style.setProperty("transform", `translateX(${baseX + dx}px)`, "important");
+  }
+
+  function onUp() {
+    if (!dragging) return;
+    dragging = false;
+    wrap.classList.remove("dragging");
+    track.style.removeProperty("transform");
+    track.getAnimations().forEach((a) => a.play());
+  }
+
+  wrap.addEventListener("pointerdown", onDown);
+  wrap.addEventListener("pointermove", onMove);
+  wrap.addEventListener("pointerup", onUp);
+  wrap.addEventListener("pointercancel", onUp);
 })();
 
 /* ---------- Feed (Supabase + Demo + Sprachfilter + Infinite Scroll) ---------- */
