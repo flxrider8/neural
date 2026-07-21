@@ -28,6 +28,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 /* ============================================================
    NEURAL v2 — Modern Clean
@@ -159,6 +160,59 @@ main { padding-top: var(--header-h); }
     50% { box-shadow: 0 0 0 6px rgba(31, 212, 99, 0); }
   }
 }
+
+/* ---------- Auth (Anmelden / Profil-Dropdown) ---------- */
+.auth-slot { position: relative; display: flex; align-items: center; flex-shrink: 0; }
+
+.auth-login-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-family: var(--font); font-size: 0.86rem; font-weight: 700; color: #fff;
+  background: var(--accent); border-radius: 999px; padding: 9px 16px; text-decoration: none;
+  transition: background 0.2s ease, transform 0.15s ease; min-height: 36px; white-space: nowrap;
+}
+.auth-login-btn:hover { background: var(--accent-strong); transform: translateY(-1px); }
+.auth-login-btn:active { transform: translateY(0) scale(0.97); }
+.auth-login-btn svg { flex-shrink: 0; }
+@media (max-width: 420px) {
+  .auth-login-btn span { display: none; }
+  .auth-login-btn { padding: 9px; }
+}
+
+.auth-user { display: none; align-items: center; }
+.auth-avatar-btn {
+  width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid var(--line); background: var(--bg-elev);
+  padding: 0; cursor: pointer; overflow: hidden; display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-weight: 700; font-size: 0.88rem; color: var(--ink-2);
+  transition: border-color 0.2s ease; flex-shrink: 0;
+}
+.auth-avatar-btn:hover { border-color: var(--accent); }
+.auth-avatar-btn img { width: 100%; height: 100%; object-fit: cover; }
+
+.auth-dropdown {
+  position: absolute; top: calc(100% + 10px); right: 0; z-index: 120; width: 240px;
+  background: var(--bg-elev); border: 1px solid var(--line); border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-hover); padding: 8px;
+  opacity: 0; visibility: hidden; pointer-events: none; transform: translateY(-6px);
+  transition: opacity 0.2s ease, transform 0.25s cubic-bezier(0.16,1,0.3,1), visibility 0.2s;
+}
+.auth-dropdown.open { opacity: 1; visibility: visible; pointer-events: auto; transform: translateY(0); }
+.auth-dropdown-preview { display: flex; align-items: center; gap: 12px; padding: 10px 10px 14px; border-bottom: 1px solid var(--line); margin-bottom: 6px; }
+.auth-avatar-lg {
+  width: 40px; height: 40px; border-radius: 50%; overflow: hidden; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; background: var(--bg);
+  font-family: var(--mono); font-weight: 700; font-size: 1rem; color: var(--ink-2); border: 1.5px solid var(--line);
+}
+.auth-avatar-lg img { width: 100%; height: 100%; object-fit: cover; }
+.auth-dropdown-name { font-weight: 700; font-size: 0.92rem; letter-spacing: -0.01em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.auth-dropdown-email { font-size: 0.76rem; color: var(--ink-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.auth-dropdown-item {
+  display: flex; align-items: center; width: 100%; text-align: left;
+  font-family: var(--font); font-size: 0.86rem; font-weight: 600; color: var(--ink);
+  background: none; border: none; padding: 10px; border-radius: var(--radius-sm); cursor: pointer;
+  text-decoration: none; transition: background 0.15s ease;
+}
+.auth-dropdown-item:hover { background: var(--line); }
+.auth-dropdown-logout { color: var(--accent); }
 
 .burger {
   display: none;
@@ -498,6 +552,30 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
         <span class="pulse" aria-hidden="true"></span>
         <span id="syncStatus">Live synchronisiert</span>
       </div>
+
+      <div class="auth-slot" id="authSlot">
+        <a href="login/" class="auth-login-btn" id="authLoginBtn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 12a4.5 4.5 0 100-9 4.5 4.5 0 000 9zM4 20c1.5-3.8 4.9-6 8-6s6.5 2.2 8 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>Anmelden</span>
+        </a>
+        <div class="auth-user" id="authUser">
+          <button class="auth-avatar-btn" id="authAvatarBtn" aria-haspopup="true" aria-expanded="false" aria-label="Kontomenü öffnen">
+            <span id="authAvatarImg">?</span>
+          </button>
+          <div class="auth-dropdown" id="authDropdown" aria-hidden="true">
+            <div class="auth-dropdown-preview">
+              <span class="auth-avatar-lg" id="authDropdownAvatar">?</span>
+              <div style="min-width:0;">
+                <div class="auth-dropdown-name" id="authDropdownName">—</div>
+                <div class="auth-dropdown-email" id="authDropdownEmail"></div>
+              </div>
+            </div>
+            <a href="login/" class="auth-dropdown-item">Profil bearbeiten</a>
+            <button type="button" class="auth-dropdown-item auth-dropdown-logout" id="authLogoutBtn">Abmelden</button>
+          </div>
+        </div>
+      </div>
+
       <button class="burger" id="burgerBtn" aria-expanded="false" aria-controls="mobileMenu" aria-label="Menü öffnen">
         <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path class="burger-top" d="M4 7h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -662,6 +740,95 @@ const CONFIG = {
 };
 
 document.documentElement.classList.add("js");
+
+/* ---------- Auth (Header: Anmelden-Button / Profil-Dropdown) ---------- */
+(() => {
+  "use strict";
+  const supabaseAuth = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+
+  const loginBtn = document.getElementById("authLoginBtn");
+  const userWrap = document.getElementById("authUser");
+  const avatarBtn = document.getElementById("authAvatarBtn");
+  const dropdown = document.getElementById("authDropdown");
+  const dropdownAvatar = document.getElementById("authDropdownAvatar");
+  const dropdownName = document.getElementById("authDropdownName");
+  const dropdownEmail = document.getElementById("authDropdownEmail");
+  const headerAvatarImg = document.getElementById("authAvatarImg");
+  const logoutBtn = document.getElementById("authLogoutBtn");
+
+  function initials(name) {
+    return (name || "?").trim().slice(0, 1).toUpperCase() || "?";
+  }
+  function renderAvatar(el, url, name) {
+    el.innerHTML = "";
+    if (url) {
+      const img = document.createElement("img");
+      img.src = url;
+      img.alt = "";
+      img.onerror = () => { el.textContent = initials(name); };
+      el.appendChild(img);
+    } else {
+      el.textContent = initials(name);
+    }
+  }
+
+  function showLoggedOut() {
+    loginBtn.style.display = "inline-flex";
+    userWrap.style.display = "none";
+    closeDropdown();
+  }
+
+  async function showLoggedIn(user) {
+    loginBtn.style.display = "none";
+    userWrap.style.display = "flex";
+    const { data: profile } = await supabaseAuth.from("profiles").select("display_name, avatar_url").eq("id", user.id).single();
+    const name = profile?.display_name || user.email;
+    renderAvatar(headerAvatarImg, profile?.avatar_url, name);
+    renderAvatar(dropdownAvatar, profile?.avatar_url, name);
+    dropdownName.textContent = name;
+    dropdownEmail.textContent = user.email;
+  }
+
+  function openDropdown() {
+    dropdown.classList.add("open");
+    dropdown.setAttribute("aria-hidden", "false");
+    avatarBtn.setAttribute("aria-expanded", "true");
+  }
+  function closeDropdown() {
+    dropdown.classList.remove("open");
+    dropdown.setAttribute("aria-hidden", "true");
+    avatarBtn.setAttribute("aria-expanded", "false");
+  }
+
+  avatarBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    if (dropdown.classList.contains("open")) closeDropdown();
+    else openDropdown();
+  });
+  document.addEventListener("click", (e) => {
+    if (dropdown.classList.contains("open") && !dropdown.contains(e.target) && e.target !== avatarBtn) closeDropdown();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeDropdown();
+  });
+
+  logoutBtn.addEventListener("click", async () => {
+    await supabaseAuth.auth.signOut();
+    closeDropdown();
+    showLoggedOut();
+  });
+
+  supabaseAuth.auth.onAuthStateChange((event, session) => {
+    if (event === "SIGNED_IN" && session) showLoggedIn(session.user);
+    else if (event === "SIGNED_OUT") showLoggedOut();
+  });
+
+  (async () => {
+    const { data: { session } } = await supabaseAuth.auth.getSession();
+    if (session) await showLoggedIn(session.user);
+    else showLoggedOut();
+  })();
+})();
 
 /* ---------- Header scroll + burger menu ---------- */
 (() => {
