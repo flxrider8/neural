@@ -30,151 +30,151 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
-  NEURAL v2 — Modern Clean
-  Gleicher Rot-Akzent & Content wie v1, aber softer, mit Tiefe
-  (Karten + Schatten statt reiner Haarlinien), echter Nav-Leiste
-  und Burger-Menü auf Mobile.
-  ============================================================ */
+   NEURAL v2 — Modern Clean
+   Gleicher Rot-Akzent & Content wie v1, aber softer, mit Tiefe
+   (Karten + Schatten statt reiner Haarlinien), echter Nav-Leiste
+   und Burger-Menü auf Mobile.
+   ============================================================ */
 
 :root {
---bg: #fafafa;
---bg-elev: #ffffff;
---ink: #14141a;
---ink-2: #5c5c68;
---ink-3: #9797a3;
---line: rgba(20, 20, 26, 0.09);
---accent: #e00020;
---accent-strong: #b8001a;
---accent-ink: #ffffff;
---radius-sm: 10px;
---radius-lg: 22px;
---shadow: 0 1px 2px rgba(20, 20, 30, 0.04), 0 10px 30px rgba(20, 20, 30, 0.06);
---shadow-hover: 0 4px 10px rgba(20, 20, 30, 0.06), 0 20px 48px rgba(20, 20, 30, 0.12);
---font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
---mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Consolas, monospace;
---container: clamp(20px, 5vw, 64px);
---header-h: 72px;
+  --bg: #fafafa;
+  --bg-elev: #ffffff;
+  --ink: #14141a;
+  --ink-2: #5c5c68;
+  --ink-3: #9797a3;
+  --line: rgba(20, 20, 26, 0.09);
+  --accent: #e00020;
+  --accent-strong: #b8001a;
+  --accent-ink: #ffffff;
+  --radius-sm: 10px;
+  --radius-lg: 22px;
+  --shadow: 0 1px 2px rgba(20, 20, 30, 0.04), 0 10px 30px rgba(20, 20, 30, 0.06);
+  --shadow-hover: 0 4px 10px rgba(20, 20, 30, 0.06), 0 20px 48px rgba(20, 20, 30, 0.12);
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Consolas, monospace;
+  --container: clamp(20px, 5vw, 64px);
+  --header-h: 72px;
 }
 
 @media (prefers-color-scheme: dark) {
-:root {
---bg: #0b0b0e;
---bg-elev: #17171c;
---ink: #f4f4f6;
---ink-2: #a6a6b0;
---ink-3: #6c6c76;
---line: rgba(244, 244, 246, 0.1);
---accent: #ff4757;
---accent-strong: #ff707c;
---shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 10px 30px rgba(0, 0, 0, 0.35);
---shadow-hover: 0 4px 10px rgba(0, 0, 0, 0.35), 0 20px 48px rgba(0, 0, 0, 0.5);
-}
+  :root {
+    --bg: #0b0b0e;
+    --bg-elev: #17171c;
+    --ink: #f4f4f6;
+    --ink-2: #a6a6b0;
+    --ink-3: #6c6c76;
+    --line: rgba(244, 244, 246, 0.1);
+    --accent: #ff4757;
+    --accent-strong: #ff707c;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 10px 30px rgba(0, 0, 0, 0.35);
+    --shadow-hover: 0 4px 10px rgba(0, 0, 0, 0.35), 0 20px 48px rgba(0, 0, 0, 0.5);
+  }
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; overflow-x: hidden; width: 100%; }
 body {
-font-family: var(--font);
-background: var(--bg);
-color: var(--ink);
-line-height: 1.5;
--webkit-font-smoothing: antialiased;
-overflow-x: hidden;
-width: 100%;
-position: relative;
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  width: 100%;
+  position: relative;
 }
 body.menu-open { overflow: hidden; }
 ::selection { background: var(--accent); color: var(--accent-ink); }
 img { max-width: 100%; display: block; }
 
 .skip-link {
-position: absolute; top: -100px; left: 16px;
-background: var(--ink); color: var(--bg);
-padding: 12px 20px; border-radius: var(--radius-sm);
-z-index: 200; text-decoration: none; font-weight: 600;
-transition: top 0.2s ease;
+  position: absolute; top: -100px; left: 16px;
+  background: var(--ink); color: var(--bg);
+  padding: 12px 20px; border-radius: var(--radius-sm);
+  z-index: 200; text-decoration: none; font-weight: 600;
+  transition: top 0.2s ease;
 }
 .skip-link:focus { top: 16px; }
 
 /* ---------- Header / Nav ---------- */
 .site-header {
-position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-height: var(--header-h);
-display: flex; align-items: center;
-padding: 0 var(--container);
-background: color-mix(in srgb, var(--bg) 72%, transparent);
--webkit-backdrop-filter: blur(16px) saturate(160%);
-backdrop-filter: blur(16px) saturate(160%);
-border-bottom: 1px solid transparent;
-transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: var(--header-h);
+  display: flex; align-items: center;
+  padding: 0 var(--container);
+  background: color-mix(in srgb, var(--bg) 72%, transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  backdrop-filter: blur(16px) saturate(160%);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .site-header.scrolled { border-bottom-color: var(--line); box-shadow: 0 1px 0 rgba(0,0,0,0.02); }
 @media (max-width: 859px) {
-.site-header.hide-nav { transform: translateY(-100%); }
+  .site-header.hide-nav { transform: translateY(-100%); }
 }
 main { padding-top: var(--header-h); }
 
 .nav-inner {
-width: 100%; max-width: 1280px; margin: 0 auto;
-display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  width: 100%; max-width: 1280px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between; gap: 24px;
 }
 
 .logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.05rem; letter-spacing: -0.01em; color: var(--ink); text-decoration: none; }
 .logo-mark {
-display: inline-flex; align-items: center; justify-content: center;
-width: 30px; height: 30px; border-radius: 9px;
-font-family: var(--mono); font-size: 0.85rem; font-weight: 700;
-color: var(--accent-ink);
-background: var(--accent);
-box-shadow: 0 4px 14px color-mix(in srgb, var(--accent) 35%, transparent);
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; border-radius: 9px;
+  font-family: var(--mono); font-size: 0.85rem; font-weight: 700;
+  color: var(--accent-ink);
+  background: var(--accent);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--accent) 35%, transparent);
 }
 
 .nav-links {
-display: flex; align-items: center; gap: 4px;
-list-style: none;
+  display: flex; align-items: center; gap: 4px;
+  list-style: none;
 }
 .nav-links a {
-display: inline-flex; align-items: center;
-padding: 9px 16px; border-radius: 999px;
-font-size: 0.9rem; font-weight: 500; color: var(--ink-2); text-decoration: none;
-transition: background 0.2s ease, color 0.2s ease;
+  display: inline-flex; align-items: center;
+  padding: 9px 16px; border-radius: 999px;
+  font-size: 0.9rem; font-weight: 500; color: var(--ink-2); text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 .nav-links a:hover { background: var(--line); color: var(--ink); }
 
 .nav-right { display: flex; align-items: center; gap: 14px; }
 
 .status-pill {
-display: flex; align-items: center; gap: 8px;
-font-family: var(--mono); font-size: 0.72rem; font-weight: 500;
-color: var(--ink-2); text-transform: uppercase; letter-spacing: 0.08em;
-padding: 8px 14px; border-radius: 999px;
-background: var(--bg-elev); border: 1px solid var(--line); box-shadow: var(--shadow);
-white-space: nowrap;
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--mono); font-size: 0.72rem; font-weight: 500;
+  color: var(--ink-2); text-transform: uppercase; letter-spacing: 0.08em;
+  padding: 8px 14px; border-radius: 999px;
+  background: var(--bg-elev); border: 1px solid var(--line); box-shadow: var(--shadow);
+  white-space: nowrap;
 }
 .pulse { width: 7px; height: 7px; border-radius: 50%; background: #1fd463; flex-shrink: 0; }
 @media (prefers-reduced-motion: no-preference) {
-.pulse { animation: pulse 2.2s ease-in-out infinite; }
-@keyframes pulse {
-0%, 100% { box-shadow: 0 0 0 0 rgba(31, 212, 99, 0.5); }
-50% { box-shadow: 0 0 0 6px rgba(31, 212, 99, 0); }
-}
+  .pulse { animation: pulse 2.2s ease-in-out infinite; }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(31, 212, 99, 0.5); }
+    50% { box-shadow: 0 0 0 6px rgba(31, 212, 99, 0); }
+  }
 }
 
 .burger {
-display: none;
-width: 44px; height: 44px;
-align-items: center; justify-content: center;
-border-radius: 999px; border: 1px solid var(--line);
-background: var(--bg-elev); box-shadow: var(--shadow);
-cursor: pointer; flex-shrink: 0; padding: 0;
-transition: background 0.2s ease, border-color 0.2s ease;
+  display: none;
+  width: 44px; height: 44px;
+  align-items: center; justify-content: center;
+  border-radius: 999px; border: 1px solid var(--line);
+  background: var(--bg-elev); box-shadow: var(--shadow);
+  cursor: pointer; flex-shrink: 0; padding: 0;
+  transition: background 0.2s ease, border-color 0.2s ease;
 }
 .burger:hover { border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); }
 .burger svg { width: 20px; height: 20px; overflow: visible; }
 .burger path {
-color: var(--ink);
-transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
-transform-origin: 12px 12px;
+  color: var(--ink);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+  transform-origin: 12px 12px;
 }
 .burger[aria-expanded="true"] { background: var(--ink); border-color: var(--ink); }
 .burger[aria-expanded="true"] path { color: var(--bg-elev); }
@@ -183,42 +183,42 @@ transform-origin: 12px 12px;
 .burger[aria-expanded="true"] .burger-bot { transform: translateY(-6px) rotate(-45deg); }
 
 .menu-scrim {
-position: fixed; inset: 0; z-index: 90;
-background: rgba(8, 8, 12, 0.45);
--webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
-opacity: 0; visibility: hidden; pointer-events: none;
-transition: opacity 0.3s ease, visibility 0.3s;
+  position: fixed; inset: 0; z-index: 90;
+  background: rgba(8, 8, 12, 0.45);
+  -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity 0.3s ease, visibility 0.3s;
 }
 .menu-scrim.open { opacity: 1; visibility: visible; pointer-events: auto; }
 
 .mobile-menu {
-position: fixed; top: 0; right: 0; bottom: 0; z-index: 110;
-width: min(86vw, 340px);
-background: var(--bg-elev);
-border-left: 1px solid var(--line);
-box-shadow: -16px 0 48px rgba(0, 0, 0, 0.18);
-display: flex; flex-direction: column;
-padding: 16px 18px 24px;
-transform: translateX(100%);
-transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  position: fixed; top: 0; right: 0; bottom: 0; z-index: 110;
+  width: min(86vw, 340px);
+  background: var(--bg-elev);
+  border-left: 1px solid var(--line);
+  box-shadow: -16px 0 48px rgba(0, 0, 0, 0.18);
+  display: flex; flex-direction: column;
+  padding: 16px 18px 24px;
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .mobile-menu.open { transform: translateX(0); }
 
 .mobile-menu-head { display: flex; align-items: center; justify-content: space-between; }
 .mobile-menu-close {
-width: 40px; height: 40px; border-radius: 999px; border: 1px solid var(--line);
-background: var(--bg); color: var(--ink);
-display: flex; align-items: center; justify-content: center; cursor: pointer;
+  width: 40px; height: 40px; border-radius: 999px; border: 1px solid var(--line);
+  background: var(--bg); color: var(--ink);
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
 }
 .mobile-menu-close svg { width: 16px; height: 16px; }
 
 .mobile-menu nav { display: flex; flex-direction: column; gap: 2px; margin-top: 22px; }
 .mobile-menu a {
-display: flex; align-items: center; gap: 14px;
-padding: 15px 12px; border-radius: var(--radius-sm);
-font-size: 1.04rem; font-weight: 600; letter-spacing: -0.01em;
-color: var(--ink); text-decoration: none;
-transition: background 0.2s ease;
+  display: flex; align-items: center; gap: 14px;
+  padding: 15px 12px; border-radius: var(--radius-sm);
+  font-size: 1.04rem; font-weight: 600; letter-spacing: -0.01em;
+  color: var(--ink); text-decoration: none;
+  transition: background 0.2s ease;
 }
 .mobile-menu a:hover, .mobile-menu a:active { background: var(--line); }
 .mobile-menu a svg { width: 19px; height: 19px; color: var(--accent); flex-shrink: 0; }
@@ -227,36 +227,36 @@ transition: background 0.2s ease;
 .mobile-menu .status-pill { width: fit-content; }
 
 @media (min-width: 860px) {
-.burger, .mobile-menu, .menu-scrim { display: none; }
+  .burger, .mobile-menu, .menu-scrim { display: none; }
 }
 @media (max-width: 859px) {
-.nav-links { display: none; }
-.burger { display: inline-flex; }
+  .nav-links { display: none; }
+  .burger { display: inline-flex; }
 }
 @media (max-width: 380px) {
-.site-header .status-pill span:last-child { display: none; }
-.site-header .status-pill { padding: 8px 10px; }
+  .site-header .status-pill span:last-child { display: none; }
+  .site-header .status-pill { padding: 8px 10px; }
 }
 
 /* ---------- Hero ---------- */
 .hero {
-position: relative;
-max-width: 1280px; margin: 0 auto;
-padding: clamp(56px, 11vh, 128px) var(--container) clamp(48px, 8vh, 88px);
+  position: relative;
+  max-width: 1280px; margin: 0 auto;
+  padding: clamp(56px, 11vh, 128px) var(--container) clamp(48px, 8vh, 88px);
 }
 .hero-kicker {
-display: inline-flex; align-items: center; gap: 8px;
-font-family: var(--mono); font-size: 0.76rem; font-weight: 600;
-color: var(--accent); text-transform: uppercase; letter-spacing: 0.12em;
-margin-bottom: 22px; padding: 7px 14px 7px 8px; border-radius: 999px;
-background: color-mix(in srgb, var(--accent) 10%, transparent);
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--mono); font-size: 0.76rem; font-weight: 600;
+  color: var(--accent); text-transform: uppercase; letter-spacing: 0.12em;
+  margin-bottom: 22px; padding: 7px 14px 7px 8px; border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
 }
 .hero-kicker .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
 
 .hero h1 {
-font-size: clamp(2.5rem, 6.4vw, 4.8rem);
-font-weight: 800; letter-spacing: -0.035em; line-height: 1.03;
-max-width: 16ch; margin-bottom: 24px;
+  font-size: clamp(2.5rem, 6.4vw, 4.8rem);
+  font-weight: 800; letter-spacing: -0.035em; line-height: 1.03;
+  max-width: 16ch; margin-bottom: 24px;
 }
 .hero h1 em { font-style: normal; color: var(--accent); }
 
@@ -265,80 +265,80 @@ max-width: 16ch; margin-bottom: 24px;
 .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-bottom: clamp(40px, 7vh, 72px); }
 
 .btn {
-display: inline-flex; align-items: center; gap: 10px;
-font-family: var(--font); font-size: 0.95rem; font-weight: 600;
-padding: 15px 28px; border-radius: 999px; cursor: pointer; text-decoration: none;
-transition: transform 0.15s ease, box-shadow 0.25s ease, background 0.2s ease, color 0.2s ease;
-min-height: 48px; border: none;
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--font); font-size: 0.95rem; font-weight: 600;
+  padding: 15px 28px; border-radius: 999px; cursor: pointer; text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.25s ease, background 0.2s ease, color 0.2s ease;
+  min-height: 48px; border: none;
 }
 .btn-primary {
-background: var(--accent); color: #fff;
-box-shadow: 0 10px 28px color-mix(in srgb, var(--accent) 32%, transparent);
+  background: var(--accent); color: #fff;
+  box-shadow: 0 10px 28px color-mix(in srgb, var(--accent) 32%, transparent);
 }
 .btn-primary:hover {
-background: var(--accent-strong);
-transform: translateY(-2px);
-box-shadow: 0 14px 36px color-mix(in srgb, var(--accent) 42%, transparent);
+  background: var(--accent-strong);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 36px color-mix(in srgb, var(--accent) 42%, transparent);
 }
 .btn-primary:active { transform: translateY(0) scale(0.98); }
 .btn-ghost {
-background: var(--bg-elev); color: var(--ink); border: 1px solid var(--line); box-shadow: var(--shadow);
+  background: var(--bg-elev); color: var(--ink); border: 1px solid var(--line); box-shadow: var(--shadow);
 }
 .btn-ghost:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
 .btn svg { transition: transform 0.2s ease; }
 .btn:hover svg { transform: translateY(2px); }
 
 @media (max-width: 640px) {
-.hero-actions { flex-direction: column; align-items: stretch; }
-.btn { justify-content: center; width: 100%; }
+  .hero-actions { flex-direction: column; align-items: stretch; }
+  .btn { justify-content: center; width: 100%; }
 }
 
 /* ---------- Stat cards ----------
-  Ab 721px: normales Grid. Bis 720px: endlos-Ticker (wie index.html),
-  Karten laufen automatisch rechts nach links durch.
+   Ab 721px: normales Grid. Bis 720px: endlos-Ticker (wie index.html),
+   Karten laufen automatisch rechts nach links durch.
 */
 .stats-track {
-display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; width: auto;
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; width: auto;
 }
 @media (min-width: 1000px) {
-.stats-track { grid-template-columns: repeat(4, 1fr); }
+  .stats-track { grid-template-columns: repeat(4, 1fr); }
 }
 @media (min-width: 721px) {
-.stat-card[aria-hidden="true"] { display: none; }
+  .stat-card[aria-hidden="true"] { display: none; }
 }
 @media (max-width: 720px) {
-.stats {
-overflow: hidden;
-margin: 0 calc(var(--container) * -1);
--webkit-mask-image: linear-gradient(to right, transparent, #000 var(--container), #000 calc(100% - var(--container)), transparent);
-mask-image: linear-gradient(to right, transparent, #000 var(--container), #000 calc(100% - var(--container)), transparent);
-}
-.stats-track {
-display: flex; gap: 12px; width: max-content;
-padding-inline: var(--container);
-}
-.stat-card { min-width: 168px; flex-shrink: 0; }
-@media (prefers-reduced-motion: no-preference) {
-.stats-track { animation: stats-marquee 24s linear infinite; }
-.stats:hover .stats-track, .stats:focus-within .stats-track { animation-play-state: paused; }
-}
-@media (prefers-reduced-motion: reduce) {
-.stats { overflow-x: auto; -webkit-mask-image: none; mask-image: none; }
-.stat-card[aria-hidden="true"] { display: none; }
-}
+  .stats {
+    overflow: hidden;
+    margin: 0 calc(var(--container) * -1);
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--container), #000 calc(100% - var(--container)), transparent);
+    mask-image: linear-gradient(to right, transparent, #000 var(--container), #000 calc(100% - var(--container)), transparent);
+  }
+  .stats-track {
+    display: flex; gap: 12px; width: max-content;
+    padding-inline: var(--container);
+  }
+  .stat-card { min-width: 168px; flex-shrink: 0; }
+  @media (prefers-reduced-motion: no-preference) {
+    .stats-track { animation: stats-marquee 24s linear infinite; }
+    .stats:hover .stats-track, .stats:focus-within .stats-track { animation-play-state: paused; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .stats { overflow-x: auto; -webkit-mask-image: none; mask-image: none; }
+    .stat-card[aria-hidden="true"] { display: none; }
+  }
 }
 @keyframes stats-marquee {
-to { transform: translateX(-50%); }
+  to { transform: translateX(-50%); }
 }
 .stat-card {
-background: var(--bg-elev); border: 1px solid var(--line); border-radius: var(--radius-lg);
-padding: 20px; box-shadow: var(--shadow); transition: box-shadow 0.25s ease, transform 0.25s ease;
+  background: var(--bg-elev); border: 1px solid var(--line); border-radius: var(--radius-lg);
+  padding: 20px; box-shadow: var(--shadow); transition: box-shadow 0.25s ease, transform 0.25s ease;
 }
 .stat-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-3px); }
 .stat-icon {
-width: 34px; height: 34px; border-radius: 10px; margin-bottom: 14px;
-display: flex; align-items: center; justify-content: center;
-background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent);
+  width: 34px; height: 34px; border-radius: 10px; margin-bottom: 14px;
+  display: flex; align-items: center; justify-content: center;
+  background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent);
 }
 .stat-icon svg { width: 17px; height: 17px; }
 .stat-label { font-family: var(--mono); font-size: 0.66rem; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.09em; display: block; margin-bottom: 6px; }
@@ -347,30 +347,29 @@ background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--acc
 /* ---------- Feed ---------- */
 .feed-section { max-width: 1280px; margin: 0 auto; padding: clamp(64px, 9vh, 100px) var(--container) 140px; }
 .feed-header {
-display: flex; align-items: center; justify-content: space-between; gap: 16px;
-margin-bottom: 28px; flex-wrap: wrap;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  margin-bottom: 28px; flex-wrap: wrap;
 }
 .feed-header h2 { font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 800; letter-spacing: -0.03em; }
 
 .feed-controls { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
 .lang-filter { display: flex; gap: 4px; padding: 4px; background: var(--bg-elev); border: 1px solid var(--line); border-radius: 999px; box-shadow: var(--shadow); }
 .lang-btn {
-font-family: var(--font); font-size: 0.84rem; font-weight: 600;
-padding: 8px 16px; border-radius: 999px; border: none; background: transparent; color: var(--ink-2);
-cursor: pointer; transition: background 0.2s ease, color 0.2s ease; min-height: 36px;
+  font-family: var(--font); font-size: 0.84rem; font-weight: 600;
+  padding: 8px 16px; border-radius: 999px; border: none; background: transparent; color: var(--ink-2);
+  cursor: pointer; transition: background 0.2s ease, color 0.2s ease; min-height: 36px;
 }
 .lang-btn:hover { color: var(--ink); }
 .lang-btn.active { background: var(--accent); color: #fff; }
 .feed-meta { font-family: var(--mono); font-size: 0.78rem; color: var(--ink-3); font-variant-numeric: tabular-nums; text-transform: uppercase; letter-spacing: 0.07em; }
 
-.feed-grid { list-style: none; display: grid; gap: 18px; }
 .feed-grid { list-style: none; display: grid; gap: 18px; transition: opacity 0.2s ease; }
 .feed-grid.is-refreshing { opacity: 0.4; pointer-events: none; }
 
 .card {
-background: var(--bg-elev); border: 1px solid var(--line); border-radius: var(--radius-lg);
-overflow: hidden; box-shadow: var(--shadow);
-transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s ease;
+  background: var(--bg-elev); border: 1px solid var(--line); border-radius: var(--radius-lg);
+  overflow: hidden; box-shadow: var(--shadow);
+  transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s ease;
 }
 .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); }
 .card a { display: grid; grid-template-columns: 1fr; text-decoration: none; color: inherit; }
@@ -390,18 +389,9 @@ transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s ease;
 .card:hover h3 { color: var(--accent); }
 .card-desc { font-size: 0.92rem; color: var(--ink-2); line-height: 1.55; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
-.card-actions { padding: 0 24px 22px; }
 .card-actions { padding: 24px 24px 22px; }
 
 .summary-toggle {
-  display: inline-flex; align-items: center; gap: 7px;
-  font-family: var(--mono); font-size: 0.74rem; font-weight: 600;
-  text-transform: uppercase; letter-spacing: 0.06em;
-  color: var(--accent); background: none; border: none; cursor: pointer; padding: 6px 0;
-  min-height: 32px;
-}
-.summary-toggle svg { transition: transform 0.25s ease; flex-shrink: 0; }
-.summary-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
   display: inline-flex; align-items: center; gap: 8px;
   font-family: var(--font); font-size: 0.82rem; font-weight: 700;
   letter-spacing: -0.005em;
@@ -439,17 +429,13 @@ transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s ease;
 .summary-toggle[aria-expanded="true"] .summary-toggle-chevron svg { transform: rotate(180deg); }
 
 .summary-box {
-  margin-top: 8px; padding: 14px 16px; border-radius: var(--radius-sm);
   margin-top: 10px; padding: 15px 17px; border-radius: var(--radius-sm);
-background: color-mix(in srgb, var(--accent) 6%, var(--bg-elev));
-  border: 1px solid var(--line);
-  font-size: 0.88rem; color: var(--ink-2); line-height: 1.55;
+  background: color-mix(in srgb, var(--accent) 6%, var(--bg-elev));
   border: 1px solid color-mix(in srgb, var(--accent) 14%, var(--line));
   border-left: 3px solid var(--accent);
   font-size: 0.88rem; color: var(--ink-2); line-height: 1.6;
-min-height: 20px;
+  min-height: 20px;
 }
-.summary-box.error { color: var(--accent); }
 .summary-box.error { color: var(--accent); border-left-color: var(--accent); }
 @media (prefers-reduced-motion: no-preference) {
   .summary-box { animation: summary-reveal 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -479,10 +465,10 @@ min-height: 20px;
 
 /* ---------- Footer ---------- */
 .site-footer {
-border-top: 1px solid var(--line); padding: 36px var(--container);
-display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;
-max-width: 1280px; margin: 0 auto; color: var(--ink-3);
-font-family: var(--mono); font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.05em;
+  border-top: 1px solid var(--line); padding: 36px var(--container);
+  display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;
+  max-width: 1280px; margin: 0 auto; color: var(--ink-3);
+  font-family: var(--mono); font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.05em;
 }
 .footer-links { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
 .site-footer a { color: var(--ink-2); text-decoration: none; }
@@ -495,552 +481,551 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outlin
 <a href="#feed" class="skip-link">Zum Feed springen</a>
 
 <header class="site-header" id="siteHeader">
-<div class="nav-inner">
-<a href="#" class="logo" aria-label="Neural — Startseite">
-<span class="logo-mark" aria-hidden="true">N</span>
-Neural
-</a>
+  <div class="nav-inner">
+    <a href="#" class="logo" aria-label="Neural — Startseite">
+      <span class="logo-mark" aria-hidden="true">N</span>
+      Neural
+    </a>
 
-<ul class="nav-links">
-<li><a href="#feed">Feed</a></li>
-<li><a href="impressum.html">Impressum</a></li>
-<li><a href="datenschutz.html">Datenschutz</a></li>
-</ul>
+    <ul class="nav-links">
+      <li><a href="#feed">Feed</a></li>
+      <li><a href="impressum.html">Impressum</a></li>
+      <li><a href="datenschutz.html">Datenschutz</a></li>
+    </ul>
 
-<div class="nav-right">
-<div class="status-pill" role="status">
-<span class="pulse" aria-hidden="true"></span>
-<span id="syncStatus">Live synchronisiert</span>
-</div>
-<button class="burger" id="burgerBtn" aria-expanded="false" aria-controls="mobileMenu" aria-label="Menü öffnen">
-<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-<path class="burger-top" d="M4 7h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-<path class="burger-mid" d="M4 12h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-<path class="burger-bot" d="M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-</svg>
-</button>
-</div>
-</div>
+    <div class="nav-right">
+      <div class="status-pill" role="status">
+        <span class="pulse" aria-hidden="true"></span>
+        <span id="syncStatus">Live synchronisiert</span>
+      </div>
+
+      <button class="burger" id="burgerBtn" aria-expanded="false" aria-controls="mobileMenu" aria-label="Menü öffnen">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path class="burger-top" d="M4 7h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path class="burger-mid" d="M4 12h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path class="burger-bot" d="M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+  </div>
 </header>
 
 <div class="menu-scrim" id="menuScrim"></div>
 <div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Menü">
-<div class="mobile-menu-head">
-<a href="#" class="logo" aria-label="Neural — Startseite">
-<span class="logo-mark" aria-hidden="true">N</span>
-Neural
-</a>
-<button class="mobile-menu-close" id="menuCloseBtn" aria-label="Menü schließen">
-<svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-</button>
-</div>
+  <div class="mobile-menu-head">
+    <a href="#" class="logo" aria-label="Neural — Startseite">
+      <span class="logo-mark" aria-hidden="true">N</span>
+      Neural
+    </a>
+    <button class="mobile-menu-close" id="menuCloseBtn" aria-label="Menü schließen">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+  </div>
 
-<nav aria-label="Mobile Navigation">
-<a href="#feed">
-<svg viewBox="0 0 24 24" fill="none"><path d="M4 11a9 9 0 019 9M4 4a16 16 0 0116 16M5 19a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-Feed
-</a>
-<a href="impressum.html">
-<svg viewBox="0 0 24 24" fill="none"><path d="M7 3h8l4 4v14a1 1 0 01-1 1H7a1 1 0 01-1-1V4a1 1 0 011-1zM14 3v5h5M9 13h6M9 17h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-Impressum
-</a>
-<a href="datenschutz.html">
-<svg viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v6c0 4.5-3 8-7 9-4-1-7-4.5-7-9V6l7-3z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-Datenschutz
-</a>
-</nav>
+  <nav aria-label="Mobile Navigation">
+    <a href="#feed">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M4 11a9 9 0 019 9M4 4a16 16 0 0116 16M5 19a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Feed
+    </a>
+    <a href="impressum.html">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M7 3h8l4 4v14a1 1 0 01-1 1H7a1 1 0 01-1-1V4a1 1 0 011-1zM14 3v5h5M9 13h6M9 17h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Impressum
+    </a>
+    <a href="datenschutz.html">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 3l7 3v6c0 4.5-3 8-7 9-4-1-7-4.5-7-9V6l7-3z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Datenschutz
+    </a>
+  </nav>
 
-<div class="mobile-menu-footer">
-<div class="status-pill" role="status">
-<span class="pulse" aria-hidden="true"></span>
-<span>Live synchronisiert</span>
-</div>
-</div>
+  <div class="mobile-menu-footer">
+    <div class="status-pill" role="status">
+      <span class="pulse" aria-hidden="true"></span>
+      <span>Live synchronisiert</span>
+    </div>
+  </div>
 </div>
 
 <main>
-<section class="hero" aria-labelledby="heroTitle">
-<span class="hero-kicker"><span class="dot" aria-hidden="true"></span>KI-News Index — Deutsch &amp; Englisch</span>
-<h1 id="heroTitle">Was in der KI-Welt passiert, <em>lückenlos erfasst.</em></h1>
-<p>Die neuesten Artikel aus der Welt der Künstlichen Intelligenz — automatisch gesammelt, KI-kuratiert und immer aktuell.</p>
+  <section class="hero" aria-labelledby="heroTitle">
+    <span class="hero-kicker"><span class="dot" aria-hidden="true"></span>KI-News Index — Deutsch &amp; Englisch</span>
+    <h1 id="heroTitle">Was in der KI-Welt passiert, <em>lückenlos erfasst.</em></h1>
+    <p>Die neuesten Artikel aus der Welt der Künstlichen Intelligenz — automatisch gesammelt, KI-kuratiert und immer aktuell.</p>
 
-<div class="hero-actions">
-<a href="#feed" class="btn btn-primary">
-Feed ansehen
-<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-<path d="M8 2v11m0 0l-4.5-4.5M8 13l4.5-4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
-</a>
-<a href="https://currentsapi.services" class="btn btn-ghost" rel="noopener">Datenquelle: Currents API</a>
-</div>
+    <div class="hero-actions">
+      <a href="#feed" class="btn btn-primary">
+        Feed ansehen
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M8 2v11m0 0l-4.5-4.5M8 13l4.5-4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+      <a href="https://currentsapi.services" class="btn btn-ghost" rel="noopener">Datenquelle: Currents API</a>
+    </div>
 
-<div class="stats">
-<div class="stats-track">
-<div class="stat-card">
-<div class="stat-icon" aria-hidden="true">
-<svg viewBox="0 0 24 24" fill="none"><path d="M12 21a9 9 0 100-18 9 9 0 000 18zM3.6 9h16.8M3.6 15h16.8M12 3a13.5 13.5 0 010 18M12 3a13.5 13.5 0 000 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-</div>
-<span class="stat-label">Sprachen</span>
-<span class="stat-value">DE / EN</span>
-</div>
-<div class="stat-card">
-<div class="stat-icon" aria-hidden="true">
-<svg viewBox="0 0 24 24" fill="none"><path d="M12 7v5l3 3M21 12a9 9 0 11-9-9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-</div>
-<span class="stat-label">Sync-Intervall</span>
-<span class="stat-value">Alle 30 Min.</span>
-</div>
-<div class="stat-card">
-<div class="stat-icon" aria-hidden="true">
-<svg viewBox="0 0 24 24" fill="none"><path d="M4 6c0-1.1 3.6-2 8-2s8 .9 8 2-3.6 2-8 2-8-.9-8-2zM4 6v12c0 1.1 3.6 2 8 2s8-.9 8-2V6M4 12c0 1.1 3.6 2 8 2s8-.9 8-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-</div>
-<span class="stat-label">Quelle</span>
-<span class="stat-value">Currents API</span>
-</div>
-<div class="stat-card">
-<div class="stat-icon" aria-hidden="true">
-<svg viewBox="0 0 24 24" fill="none"><path d="M3 7l1.5-3h15L21 7M3 7v12a1 1 0 001 1h16a1 1 0 001-1V7M3 7h18M10 12h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-</div>
-<span class="stat-label">Archiv</span>
-<span class="stat-value">200 Artikel</span>
-</div>
-<div class="stat-card" aria-hidden="true">
-<div class="stat-icon" aria-hidden="true">
-<svg viewBox="0 0 24 24" fill="none"><path d="M12 21a9 9 0 100-18 9 9 0 000 18zM3.6 9h16.8M3.6 15h16.8M12 3a13.5 13.5 0 010 18M12 3a13.5 13.5 0 000 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-</div>
-<span class="stat-label">Sprachen</span>
-<span class="stat-value">DE / EN</span>
-</div>
-<div class="stat-card" aria-hidden="true">
-<div class="stat-icon" aria-hidden="true">
-<svg viewBox="0 0 24 24" fill="none"><path d="M12 7v5l3 3M21 12a9 9 0 11-9-9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-</div>
-<span class="stat-label">Sync-Intervall</span>
-<span class="stat-value">Alle 30 Min.</span>
-</div>
-<div class="stat-card" aria-hidden="true">
-<div class="stat-icon" aria-hidden="true">
-<svg viewBox="0 0 24 24" fill="none"><path d="M4 6c0-1.1 3.6-2 8-2s8 .9 8 2-3.6 2-8 2-8-.9-8-2zM4 6v12c0 1.1 3.6 2 8 2s8-.9 8-2V6M4 12c0 1.1 3.6 2 8 2s8-.9 8-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-</div>
-<span class="stat-label">Quelle</span>
-<span class="stat-value">Currents API</span>
-</div>
-<div class="stat-card" aria-hidden="true">
-<div class="stat-icon" aria-hidden="true">
-<svg viewBox="0 0 24 24" fill="none"><path d="M3 7l1.5-3h15L21 7M3 7v12a1 1 0 001 1h16a1 1 0 001-1V7M3 7h18M10 12h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-</div>
-<span class="stat-label">Archiv</span>
-<span class="stat-value">200 Artikel</span>
-</div>
-</div>
-</div>
-</section>
+    <div class="stats">
+      <div class="stats-track">
+        <div class="stat-card">
+          <div class="stat-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 21a9 9 0 100-18 9 9 0 000 18zM3.6 9h16.8M3.6 15h16.8M12 3a13.5 13.5 0 010 18M12 3a13.5 13.5 0 000 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          </div>
+          <span class="stat-label">Sprachen</span>
+          <span class="stat-value">DE / EN</span>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 7v5l3 3M21 12a9 9 0 11-9-9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <span class="stat-label">Sync-Intervall</span>
+          <span class="stat-value">Alle 30 Min.</span>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M4 6c0-1.1 3.6-2 8-2s8 .9 8 2-3.6 2-8 2-8-.9-8-2zM4 6v12c0 1.1 3.6 2 8 2s8-.9 8-2V6M4 12c0 1.1 3.6 2 8 2s8-.9 8-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <span class="stat-label">Quelle</span>
+          <span class="stat-value">Currents API</span>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M3 7l1.5-3h15L21 7M3 7v12a1 1 0 001 1h16a1 1 0 001-1V7M3 7h18M10 12h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <span class="stat-label">Archiv</span>
+          <span class="stat-value">200 Artikel</span>
+        </div>
+        <div class="stat-card" aria-hidden="true">
+          <div class="stat-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 21a9 9 0 100-18 9 9 0 000 18zM3.6 9h16.8M3.6 15h16.8M12 3a13.5 13.5 0 010 18M12 3a13.5 13.5 0 000 18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          </div>
+          <span class="stat-label">Sprachen</span>
+          <span class="stat-value">DE / EN</span>
+        </div>
+        <div class="stat-card" aria-hidden="true">
+          <div class="stat-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 7v5l3 3M21 12a9 9 0 11-9-9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <span class="stat-label">Sync-Intervall</span>
+          <span class="stat-value">Alle 30 Min.</span>
+        </div>
+        <div class="stat-card" aria-hidden="true">
+          <div class="stat-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M4 6c0-1.1 3.6-2 8-2s8 .9 8 2-3.6 2-8 2-8-.9-8-2zM4 6v12c0 1.1 3.6 2 8 2s8-.9 8-2V6M4 12c0 1.1 3.6 2 8 2s8-.9 8-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <span class="stat-label">Quelle</span>
+          <span class="stat-value">Currents API</span>
+        </div>
+        <div class="stat-card" aria-hidden="true">
+          <div class="stat-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M3 7l1.5-3h15L21 7M3 7v12a1 1 0 001 1h16a1 1 0 001-1V7M3 7h18M10 12h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <span class="stat-label">Archiv</span>
+          <span class="stat-value">200 Artikel</span>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<section class="feed-section" id="feed" aria-labelledby="feedTitle">
-<div class="feed-header">
-<h2 id="feedTitle">Neueste Artikel</h2>
-<div class="feed-controls">
-<div class="lang-filter" role="group" aria-label="Nach Sprache filtern">
-<button type="button" class="lang-btn active" data-lang="all" aria-pressed="true">Alle</button>
-<button type="button" class="lang-btn" data-lang="de" aria-pressed="false">DE</button>
-<button type="button" class="lang-btn" data-lang="en" aria-pressed="false">EN</button>
-</div>
-<span class="feed-meta" id="feedMeta"></span>
-</div>
-</div>
-<ul class="feed-grid" id="feedList" aria-live="polite" aria-busy="true">
-<li class="skeleton" aria-hidden="true"><span class="sk-line w-30"></span><span class="sk-line w-90"></span><span class="sk-line w-70"></span></li>
-<li class="skeleton" aria-hidden="true"><span class="sk-line w-30"></span><span class="sk-line w-90"></span><span class="sk-line w-70"></span></li>
-<li class="skeleton" aria-hidden="true"><span class="sk-line w-30"></span><span class="sk-line w-90"></span><span class="sk-line w-70"></span></li>
-</ul>
-<div class="load-indicator" id="loadIndicator">Lade ältere Artikel…</div>
-<div class="sentinel" id="sentinel" aria-hidden="true"></div>
-</section>
+  <section class="feed-section" id="feed" aria-labelledby="feedTitle">
+    <div class="feed-header">
+      <h2 id="feedTitle">Neueste Artikel</h2>
+      <div class="feed-controls">
+        <div class="lang-filter" role="group" aria-label="Nach Sprache filtern">
+          <button type="button" class="lang-btn active" data-lang="all" aria-pressed="true">Alle</button>
+          <button type="button" class="lang-btn" data-lang="de" aria-pressed="false">DE</button>
+          <button type="button" class="lang-btn" data-lang="en" aria-pressed="false">EN</button>
+        </div>
+        <span class="feed-meta" id="feedMeta"></span>
+      </div>
+    </div>
+    <ul class="feed-grid" id="feedList" aria-live="polite" aria-busy="true">
+      <li class="skeleton" aria-hidden="true"><span class="sk-line w-30"></span><span class="sk-line w-90"></span><span class="sk-line w-70"></span></li>
+      <li class="skeleton" aria-hidden="true"><span class="sk-line w-30"></span><span class="sk-line w-90"></span><span class="sk-line w-70"></span></li>
+      <li class="skeleton" aria-hidden="true"><span class="sk-line w-30"></span><span class="sk-line w-90"></span><span class="sk-line w-70"></span></li>
+    </ul>
+    <div class="load-indicator" id="loadIndicator">Lade ältere Artikel…</div>
+    <div class="sentinel" id="sentinel" aria-hidden="true"></div>
+  </section>
 </main>
 
 <footer class="site-footer">
-<span>© 2026 Neural — Automatisch aggregierte KI-News</span>
-<nav class="footer-links" aria-label="Rechtliches">
-<a href="impressum.html">Impressum</a>
-<a href="datenschutz.html">Datenschutz</a>
-<a href="https://currentsapi.services" rel="noopener">Quelle: Currents API</a>
-</nav>
+  <span>© 2026 Neural — Automatisch aggregierte KI-News</span>
+  <nav class="footer-links" aria-label="Rechtliches">
+    <a href="impressum.html">Impressum</a>
+    <a href="datenschutz.html">Datenschutz</a>
+    <a href="https://currentsapi.services" rel="noopener">Quelle: Currents API</a>
+  </nav>
 </footer>
 
 <script>
 const CONFIG = {
-SUPABASE_URL: "https://xbrxhzampuhjyvyhntiv.supabase.co",
-SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhicnhoemFtcHVoanl2eWhudGl2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwMzY2OTEsImV4cCI6MjA5OTYxMjY5MX0.7aq734Vwp-nKzNsLvQPgYAMpWtLp6oGDzrVCjBhi-fc",
-SYNC_WORKER_URL: "https://neural-sync.flxrider8.workers.dev",
-PAGE_SIZE: 12,
+  SUPABASE_URL: "https://xbrxhzampuhjyvyhntiv.supabase.co",
+  SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhicnhoemFtcHVoanl2eWhudGl2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwMzY2OTEsImV4cCI6MjA5OTYxMjY5MX0.7aq734Vwp-nKzNsLvQPgYAMpWtLp6oGDzrVCjBhi-fc",
+  SYNC_WORKER_URL: "https://neural-sync.flxrider8.workers.dev",
+  PAGE_SIZE: 12,
 };
 
 document.documentElement.classList.add("js");
 
 /* ---------- Header scroll + burger menu ---------- */
 (() => {
-"use strict";
-const header = document.getElementById("siteHeader");
-const burger = document.getElementById("burgerBtn");
-const menu = document.getElementById("mobileMenu");
-const scrim = document.getElementById("menuScrim");
-const closeBtn = document.getElementById("menuCloseBtn");
+  "use strict";
+  const header = document.getElementById("siteHeader");
+  const burger = document.getElementById("burgerBtn");
+  const menu = document.getElementById("mobileMenu");
+  const scrim = document.getElementById("menuScrim");
+  const closeBtn = document.getElementById("menuCloseBtn");
 
-const headerObserver = new IntersectionObserver(
-([entry]) => header.classList.toggle("scrolled", !entry.isIntersecting),
-{ rootMargin: "-10px 0px 0px 0px" }
-);
-const topMarker = document.createElement("div");
-topMarker.style.cssText = "position:absolute;top:0;height:1px;width:1px;";
-document.body.prepend(topMarker);
-headerObserver.observe(topMarker);
+  const headerObserver = new IntersectionObserver(
+    ([entry]) => header.classList.toggle("scrolled", !entry.isIntersecting),
+    { rootMargin: "-10px 0px 0px 0px" }
+  );
+  const topMarker = document.createElement("div");
+  topMarker.style.cssText = "position:absolute;top:0;height:1px;width:1px;";
+  document.body.prepend(topMarker);
+  headerObserver.observe(topMarker);
 
-function closeMenu() {
-menu.classList.remove("open");
-scrim.classList.remove("open");
-burger.setAttribute("aria-expanded", "false");
-document.body.classList.remove("menu-open");
-}
-function toggleMenu() {
-const isOpen = menu.classList.toggle("open");
-scrim.classList.toggle("open", isOpen);
-burger.setAttribute("aria-expanded", String(isOpen));
-document.body.classList.toggle("menu-open", isOpen);
-}
-burger.addEventListener("click", toggleMenu);
-closeBtn.addEventListener("click", closeMenu);
-scrim.addEventListener("click", closeMenu);
-menu.querySelectorAll("a").forEach((a) => a.addEventListener("click", closeMenu));
-document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeMenu(); });
+  function closeMenu() {
+    menu.classList.remove("open");
+    scrim.classList.remove("open");
+    burger.setAttribute("aria-expanded", "false");
+    document.body.classList.remove("menu-open");
+  }
+  function toggleMenu() {
+    const isOpen = menu.classList.toggle("open");
+    scrim.classList.toggle("open", isOpen);
+    burger.setAttribute("aria-expanded", String(isOpen));
+    document.body.classList.toggle("menu-open", isOpen);
+  }
+  burger.addEventListener("click", toggleMenu);
+  closeBtn.addEventListener("click", closeMenu);
+  scrim.addEventListener("click", closeMenu);
+  menu.querySelectorAll("a").forEach((a) => a.addEventListener("click", closeMenu));
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeMenu(); });
 
-/* ---------- Nav auf Mobile: beim Runterscrollen ausblenden, beim Hochscrollen wieder einblenden ---------- */
-let lastY = window.scrollY;
-let ticking = false;
-const SCROLL_THRESHOLD = 6;
+  /* ---------- Nav auf Mobile: beim Runterscrollen ausblenden, beim Hochscrollen wieder einblenden ---------- */
+  let lastY = window.scrollY;
+  let ticking = false;
+  const SCROLL_THRESHOLD = 6;
 
-function updateHeaderVisibility() {
-const y = window.scrollY;
-const delta = y - lastY;
+  function updateHeaderVisibility() {
+    const y = window.scrollY;
+    const delta = y - lastY;
 
-if (!menu.classList.contains("open")) {
-if (y <= header.offsetHeight) {
-header.classList.remove("hide-nav");
-} else if (delta > SCROLL_THRESHOLD) {
-header.classList.add("hide-nav");
-} else if (delta < -SCROLL_THRESHOLD) {
-header.classList.remove("hide-nav");
-}
-}
+    if (!menu.classList.contains("open")) {
+      if (y <= header.offsetHeight) {
+        header.classList.remove("hide-nav");
+      } else if (delta > SCROLL_THRESHOLD) {
+        header.classList.add("hide-nav");
+      } else if (delta < -SCROLL_THRESHOLD) {
+        header.classList.remove("hide-nav");
+      }
+    }
 
-lastY = y;
-ticking = false;
-}
+    lastY = y;
+    ticking = false;
+  }
 
-window.addEventListener("scroll", () => {
-if (!ticking) {
-requestAnimationFrame(updateHeaderVisibility);
-ticking = true;
-}
-}, { passive: true });
+  window.addEventListener("scroll", () => {
+    if (!ticking) {
+      requestAnimationFrame(updateHeaderVisibility);
+      ticking = true;
+    }
+  }, { passive: true });
 })();
 
 /* ---------- Feed (Supabase + Demo + Sprachfilter + Infinite Scroll) ---------- */
 (() => {
-"use strict";
+  "use strict";
 
-const feedList = document.getElementById("feedList");
-const feedMeta = document.getElementById("feedMeta");
-const loadIndicator = document.getElementById("loadIndicator");
-const sentinel = document.getElementById("sentinel");
-const syncStatus = document.getElementById("syncStatus");
-const langButtons = document.querySelectorAll(".lang-btn");
+  const feedList = document.getElementById("feedList");
+  const feedMeta = document.getElementById("feedMeta");
+  const loadIndicator = document.getElementById("loadIndicator");
+  const sentinel = document.getElementById("sentinel");
+  const syncStatus = document.getElementById("syncStatus");
+  const langButtons = document.querySelectorAll(".lang-btn");
 
-let offset = 0;
-let loading = false;
-let done = false;
-let totalKnown = false;
-let currentLang = "all";
-const configured = !CONFIG.SUPABASE_URL.startsWith("DEINE");
-const SKELETON_HTML = `
-   <li class="skeleton" aria-hidden="true"><span class="sk-line w-30"></span><span class="sk-line w-90"></span><span class="sk-line w-70"></span></li>
-   <li class="skeleton" aria-hidden="true"><span class="sk-line w-30"></span><span class="sk-line w-90"></span><span class="sk-line w-70"></span></li>
-   <li class="skeleton" aria-hidden="true"><span class="sk-line w-30"></span><span class="sk-line w-90"></span><span class="sk-line w-70"></span></li>
- `;
+  let offset = 0;
+  let loading = false;
+  let done = false;
+  let totalKnown = false;
+  let currentLang = "all";
+  const configured = !CONFIG.SUPABASE_URL.startsWith("DEINE");
+  const SKELETON_HTML = `
+    <li class="skeleton" aria-hidden="true"><span class="sk-line w-30"></span><span class="sk-line w-90"></span><span class="sk-line w-70"></span></li>
+    <li class="skeleton" aria-hidden="true"><span class="sk-line w-30"></span><span class="sk-line w-90"></span><span class="sk-line w-70"></span></li>
+    <li class="skeleton" aria-hidden="true"><span class="sk-line w-30"></span><span class="sk-line w-90"></span><span class="sk-line w-70"></span></li>
+  `;
 
-const revealObserver = new IntersectionObserver((entries) => {
-for (const entry of entries) {
-if (entry.isIntersecting) {
-entry.target.classList.add("revealed");
-revealObserver.unobserve(entry.target);
-}
-}
-}, { threshold: 0.12, rootMargin: "0px 0px -5% 0px" });
+  const revealObserver = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("revealed");
+        revealObserver.unobserve(entry.target);
+      }
+    }
+  }, { threshold: 0.12, rootMargin: "0px 0px -5% 0px" });
 
-const rtf = new Intl.RelativeTimeFormat("de", { numeric: "auto" });
-function relTime(iso) {
-const diff = (new Date(iso).getTime() - Date.now()) / 1000;
-const units = [["year", 31536000], ["month", 2592000], ["day", 86400], ["hour", 3600], ["minute", 60]];
-for (const [unit, secs] of units) {
-if (Math.abs(diff) >= secs) return rtf.format(Math.round(diff / secs), unit);
-}
-return "gerade eben";
-}
+  const rtf = new Intl.RelativeTimeFormat("de", { numeric: "auto" });
+  function relTime(iso) {
+    const diff = (new Date(iso).getTime() - Date.now()) / 1000;
+    const units = [["year", 31536000], ["month", 2592000], ["day", 86400], ["hour", 3600], ["minute", 60]];
+    for (const [unit, secs] of units) {
+      if (Math.abs(diff) >= secs) return rtf.format(Math.round(diff / secs), unit);
+    }
+    return "gerade eben";
+  }
 
-function renderArticle(a, index) {
-const li = document.createElement("li");
-li.className = "card";
-li.setAttribute("data-reveal", "");
+  function renderArticle(a, index) {
+    const li = document.createElement("li");
+    li.className = "card";
+    li.setAttribute("data-reveal", "");
 
-const link = document.createElement("a");
-link.href = a.url;
-link.target = "_blank";
-link.rel = "noopener noreferrer";
-if (a.image_url) link.classList.add("has-image");
+    const link = document.createElement("a");
+    link.href = a.url;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    if (a.image_url) link.classList.add("has-image");
 
-if (a.image_url) {
-const figure = document.createElement("div");
-figure.className = "card-img";
-const img = document.createElement("img");
-img.src = a.image_url;
-img.alt = "";
-img.loading = "lazy";
-img.decoding = "async";
-img.onerror = () => { figure.remove(); link.classList.remove("has-image"); };
-figure.appendChild(img);
-link.appendChild(figure);
-}
+    if (a.image_url) {
+      const figure = document.createElement("div");
+      figure.className = "card-img";
+      const img = document.createElement("img");
+      img.src = a.image_url;
+      img.alt = "";
+      img.loading = "lazy";
+      img.decoding = "async";
+      img.onerror = () => { figure.remove(); link.classList.remove("has-image"); };
+      figure.appendChild(img);
+      link.appendChild(figure);
+    }
 
-const body = document.createElement("div");
-body.className = "card-body";
+    const body = document.createElement("div");
+    body.className = "card-body";
 
-const top = document.createElement("div");
-top.className = "card-meta";
-const src = document.createElement("span");
-src.className = "card-source";
-src.textContent = a.source || "News";
-const lang = document.createElement("span");
-lang.className = "card-lang";
-lang.textContent = (a.language || "en").toUpperCase();
-const time = document.createElement("time");
-time.className = "card-time";
-time.dateTime = a.published_at;
-time.textContent = relTime(a.published_at);
-top.append(src, lang, time);
+    const top = document.createElement("div");
+    top.className = "card-meta";
+    const src = document.createElement("span");
+    src.className = "card-source";
+    src.textContent = a.source || "News";
+    const lang = document.createElement("span");
+    lang.className = "card-lang";
+    lang.textContent = (a.language || "en").toUpperCase();
+    const time = document.createElement("time");
+    time.className = "card-time";
+    time.dateTime = a.published_at;
+    time.textContent = relTime(a.published_at);
+    top.append(src, lang, time);
 
-const h3 = document.createElement("h3");
-h3.textContent = a.title;
+    const h3 = document.createElement("h3");
+    h3.textContent = a.title;
 
-body.append(top, h3);
+    body.append(top, h3);
 
-if (a.description) {
-const desc = document.createElement("p");
-desc.className = "card-desc";
-desc.textContent = a.description;
-body.appendChild(desc);
-}
+    if (a.description) {
+      const desc = document.createElement("p");
+      desc.className = "card-desc";
+      desc.textContent = a.description;
+      body.appendChild(desc);
+    }
 
-link.appendChild(body);
-li.appendChild(link);
-li.appendChild(renderSummaryToggle(a));
-revealObserver.observe(li);
-return li;
-}
+    link.appendChild(body);
+    li.appendChild(link);
+    li.appendChild(renderSummaryToggle(a));
+    revealObserver.observe(li);
+    return li;
+  }
 
-function renderSummaryToggle(a) {
-const actions = document.createElement("div");
-actions.className = "card-actions";
+  function renderSummaryToggle(a) {
+    const actions = document.createElement("div");
+    actions.className = "card-actions";
 
-const btn = document.createElement("button");
-btn.type = "button";
-btn.className = "summary-toggle";
-btn.setAttribute("aria-expanded", "false");
-    btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg> KI-Zusammenfassung`;
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "summary-toggle";
+    btn.setAttribute("aria-expanded", "false");
     btn.innerHTML = `<span class="summary-toggle-icon" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9-1.9 5.6-1.9-5.6-5.6-1.9 5.6-1.9L12 2.5z"/></svg></span>AI-Zusammenfassung<span class="summary-toggle-chevron" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>`;
 
-const box = document.createElement("div");
-box.className = "summary-box";
-box.hidden = true;
+    const box = document.createElement("div");
+    box.className = "summary-box";
+    box.hidden = true;
 
-let loaded = typeof a.summary === "string" && a.summary ? a.summary : null;
-let loading = false;
-if (loaded) box.textContent = loaded;
+    let loaded = typeof a.summary === "string" && a.summary ? a.summary : null;
+    let loading = false;
+    if (loaded) box.textContent = loaded;
 
-btn.addEventListener("click", async () => {
-const open = box.hidden;
-box.hidden = !open;
-btn.setAttribute("aria-expanded", String(open));
-if (!open || loaded || loading) return;
+    btn.addEventListener("click", async () => {
+      const open = box.hidden;
+      box.hidden = !open;
+      btn.setAttribute("aria-expanded", String(open));
+      if (!open || loaded || loading) return;
 
-loading = true;
-box.classList.remove("error");
-box.innerHTML = `<div class="summary-skeleton"><span class="sk-line" style="width:95%"></span><span class="sk-line" style="width:88%"></span><span class="sk-line" style="width:60%"></span></div>`;
+      loading = true;
+      box.classList.remove("error");
+      box.innerHTML = `<div class="summary-skeleton"><span class="sk-line" style="width:95%"></span><span class="sk-line" style="width:88%"></span><span class="sk-line" style="width:60%"></span></div>`;
 
-const controller = new AbortController();
-const timeout = setTimeout(() => controller.abort(), 20000);
-try {
-const res = await fetch(`${CONFIG.SYNC_WORKER_URL}/summarize?url=${encodeURIComponent(a.url)}`, {
-signal: controller.signal,
-});
-const data = await res.json().catch(() => null);
-if (!res.ok || !data || !data.summary) throw new Error(data?.error || `HTTP ${res.status}`);
-loaded = data.summary;
-box.textContent = loaded;
-} catch (err) {
-const timedOut = err && err.name === "AbortError";
-box.textContent = timedOut
-? "Das dauert gerade zu lange — bitte nochmal versuchen."
-: "Zusammenfassung konnte gerade nicht geladen werden.";
-box.classList.add("error");
-console.error("Summary-Fehler:", err);
-} finally {
-clearTimeout(timeout);
-loading = false;
-}
-});
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 20000);
+      try {
+        const res = await fetch(`${CONFIG.SYNC_WORKER_URL}/summarize?url=${encodeURIComponent(a.url)}`, {
+          signal: controller.signal,
+        });
+        const data = await res.json().catch(() => null);
+        if (!res.ok || !data || !data.summary) throw new Error(data?.error || `HTTP ${res.status}`);
+        loaded = data.summary;
+        box.textContent = loaded;
+      } catch (err) {
+        const timedOut = err && err.name === "AbortError";
+        box.textContent = timedOut
+          ? "Das dauert gerade zu lange — bitte nochmal versuchen."
+          : "Zusammenfassung konnte gerade nicht geladen werden.";
+        box.classList.add("error");
+        console.error("Summary-Fehler:", err);
+      } finally {
+        clearTimeout(timeout);
+        loading = false;
+      }
+    });
 
-actions.append(btn, box);
-return actions;
-}
+    actions.append(btn, box);
+    return actions;
+  }
 
-async function fetchArticles(from, to) {
-const langFilter = currentLang === "all" ? "" : `&language=eq.${currentLang}`;
-const url = `${CONFIG.SUPABASE_URL}/rest/v1/articles` +
-`?select=title,description,url,image_url,source,language,published_at,summary` +
-`&order=published_at.desc&offset=${from}&limit=${to - from + 1}${langFilter}`;
-const res = await fetch(url, {
-headers: { apikey: CONFIG.SUPABASE_ANON_KEY, Authorization: `Bearer ${CONFIG.SUPABASE_ANON_KEY}` },
-});
-if (!res.ok) throw new Error(`Supabase ${res.status}`);
-return res.json();
-}
+  async function fetchArticles(from, to) {
+    const langFilter = currentLang === "all" ? "" : `&language=eq.${currentLang}`;
+    const url = `${CONFIG.SUPABASE_URL}/rest/v1/articles` +
+      `?select=title,description,url,image_url,source,language,published_at,summary` +
+      `&order=published_at.desc&offset=${from}&limit=${to - from + 1}${langFilter}`;
+    const res = await fetch(url, {
+      headers: { apikey: CONFIG.SUPABASE_ANON_KEY, Authorization: `Bearer ${CONFIG.SUPABASE_ANON_KEY}` },
+    });
+    if (!res.ok) throw new Error(`Supabase ${res.status}`);
+    return res.json();
+  }
 
-async function fetchTotalCount() {
-const langFilter = currentLang === "all" ? "" : `&language=eq.${currentLang}`;
-const url = `${CONFIG.SUPABASE_URL}/rest/v1/articles?select=id${langFilter}`;
-const res = await fetch(url, {
-headers: {
-apikey: CONFIG.SUPABASE_ANON_KEY, Authorization: `Bearer ${CONFIG.SUPABASE_ANON_KEY}`,
-Prefer: "count=exact", Range: "0-0",
-},
-});
-if (!res.ok) throw new Error(`Supabase ${res.status}`);
-const range = res.headers.get("content-range");
-const total = range ? parseInt(range.split("/")[1], 10) : NaN;
-return Number.isFinite(total) ? total : null;
-}
+  async function fetchTotalCount() {
+    const langFilter = currentLang === "all" ? "" : `&language=eq.${currentLang}`;
+    const url = `${CONFIG.SUPABASE_URL}/rest/v1/articles?select=id${langFilter}`;
+    const res = await fetch(url, {
+      headers: {
+        apikey: CONFIG.SUPABASE_ANON_KEY, Authorization: `Bearer ${CONFIG.SUPABASE_ANON_KEY}`,
+        Prefer: "count=exact", Range: "0-0",
+      },
+    });
+    if (!res.ok) throw new Error(`Supabase ${res.status}`);
+    const range = res.headers.get("content-range");
+    const total = range ? parseInt(range.split("/")[1], 10) : NaN;
+    return Number.isFinite(total) ? total : null;
+  }
 
-function demoData() {
-const now = Date.now();
-const mk = (h, t, s, l, d) => ({
-title: t, source: s, language: l, description: d,
-url: "#", image_url: null,
-published_at: new Date(now - h * 3600e3).toISOString(),
-});
-return [
-mk(1, "Demo: Neues Sprachmodell übertrifft Benchmarks in Mathematik", "TechNews", "de", "Sobald Supabase konfiguriert ist, erscheinen hier echte Artikel aus deinem Feed."),
-mk(3, "Demo: EU verabschiedet neue Richtlinien für KI-Transparenz", "EU Journal", "de", "Trag SUPABASE_URL und ANON_KEY im CONFIG-Block ein."),
-mk(6, "Demo: OpenAI competitor releases open-weight model", "AI Weekly", "en", "Danach den Cloudflare Worker deployen — er füllt die Datenbank automatisch."),
-mk(12, "Demo: Startup nutzt KI zur Erkennung von Waldbränden", "Wired", "de", "Der Feed lädt beim Scrollen automatisch ältere Artikel nach."),
-mk(24, "Demo: Study shows LLMs improving at scientific reasoning", "Nature News", "en", "Alte Artikel werden vom Worker automatisch gelöscht, wenn das Limit erreicht ist."),
-];
-}
+  function demoData() {
+    const now = Date.now();
+    const mk = (h, t, s, l, d) => ({
+      title: t, source: s, language: l, description: d,
+      url: "#", image_url: null,
+      published_at: new Date(now - h * 3600e3).toISOString(),
+    });
+    return [
+      mk(1, "Demo: Neues Sprachmodell übertrifft Benchmarks in Mathematik", "TechNews", "de", "Sobald Supabase konfiguriert ist, erscheinen hier echte Artikel aus deinem Feed."),
+      mk(3, "Demo: EU verabschiedet neue Richtlinien für KI-Transparenz", "EU Journal", "de", "Trag SUPABASE_URL und ANON_KEY im CONFIG-Block ein."),
+      mk(6, "Demo: OpenAI competitor releases open-weight model", "AI Weekly", "en", "Danach den Cloudflare Worker deployen — er füllt die Datenbank automatisch."),
+      mk(12, "Demo: Startup nutzt KI zur Erkennung von Waldbränden", "Wired", "de", "Der Feed lädt beim Scrollen automatisch ältere Artikel nach."),
+      mk(24, "Demo: Study shows LLMs improving at scientific reasoning", "Nature News", "en", "Alte Artikel werden vom Worker automatisch gelöscht, wenn das Limit erreicht ist."),
+    ];
+  }
 
-async function loadMore() {
-if (loading || done) return;
-loading = true;
-loadIndicator.classList.add("visible");
+  async function loadMore() {
+    if (loading || done) return;
+    loading = true;
+    loadIndicator.classList.add("visible");
 
-try {
-let batch;
-if (configured) {
-batch = await fetchArticles(offset, offset + CONFIG.PAGE_SIZE - 1);
-} else {
-const pool = currentLang === "all" ? demoData() : demoData().filter((a) => a.language === currentLang);
-batch = offset === 0 ? pool : [];
-syncStatus.textContent = "Demo-Modus";
-}
+    try {
+      let batch;
+      if (configured) {
+        batch = await fetchArticles(offset, offset + CONFIG.PAGE_SIZE - 1);
+      } else {
+        const pool = currentLang === "all" ? demoData() : demoData().filter((a) => a.language === currentLang);
+        batch = offset === 0 ? pool : [];
+        syncStatus.textContent = "Demo-Modus";
+      }
 
-if (offset === 0) {
-feedList.innerHTML = "";
-feedList.setAttribute("aria-busy", "false");
-}
+      if (offset === 0) {
+        feedList.innerHTML = "";
+        feedList.setAttribute("aria-busy", "false");
+      }
 
-if (batch.length === 0 && offset === 0) {
-feedList.innerHTML = currentLang === "all"
-? `<li class="feed-state"><strong>Noch keine Artikel</strong>Der erste Sync läuft in Kürze — schau gleich wieder vorbei.</li>`
-: `<li class="feed-state"><strong>Keine Artikel in dieser Sprache</strong>Versuch es mit einem anderen Filter.</li>`;
-done = true;
-return;
-}
+      if (batch.length === 0 && offset === 0) {
+        feedList.innerHTML = currentLang === "all"
+          ? `<li class="feed-state"><strong>Noch keine Artikel</strong>Der erste Sync läuft in Kürze — schau gleich wieder vorbei.</li>`
+          : `<li class="feed-state"><strong>Keine Artikel in dieser Sprache</strong>Versuch es mit einem anderen Filter.</li>`;
+        done = true;
+        return;
+      }
 
-const frag = document.createDocumentFragment();
-batch.forEach((a, i) => frag.appendChild(renderArticle(a, offset + i + 1)));
-feedList.appendChild(frag);
+      const frag = document.createDocumentFragment();
+      batch.forEach((a, i) => frag.appendChild(renderArticle(a, offset + i + 1)));
+      feedList.appendChild(frag);
 
-offset += batch.length;
-if (!totalKnown) feedMeta.textContent = `${String(offset).padStart(3, "0")} Artikel`;
-if (batch.length < CONFIG.PAGE_SIZE) done = true;
-} catch (err) {
-console.error("Feed-Fehler:", err);
-if (offset === 0) {
-feedList.innerHTML = `<li class="feed-state"><strong>Feed konnte nicht geladen werden</strong>Prüfe die Supabase-Konfiguration.</li>`;
-}
-done = true;
-} finally {
-loading = false;
-loadIndicator.classList.remove("visible");
+      offset += batch.length;
+      if (!totalKnown) feedMeta.textContent = `${String(offset).padStart(3, "0")} Artikel`;
+      if (batch.length < CONFIG.PAGE_SIZE) done = true;
+    } catch (err) {
+      console.error("Feed-Fehler:", err);
+      if (offset === 0) {
+        feedList.innerHTML = `<li class="feed-state"><strong>Feed konnte nicht geladen werden</strong>Prüfe die Supabase-Konfiguration.</li>`;
+      }
+      done = true;
+    } finally {
+      loading = false;
+      loadIndicator.classList.remove("visible");
       feedList.classList.remove("is-refreshing");
-}
-}
+    }
+  }
 
-const sentinelObserver = new IntersectionObserver(
-(entries) => { if (entries[0].isIntersecting) loadMore(); },
-{ rootMargin: "600px 0px" }
-);
-sentinelObserver.observe(sentinel);
+  const sentinelObserver = new IntersectionObserver(
+    (entries) => { if (entries[0].isIntersecting) loadMore(); },
+    { rootMargin: "600px 0px" }
+  );
+  sentinelObserver.observe(sentinel);
 
-function loadTotalCount() {
-if (configured) {
-fetchTotalCount()
-.then((total) => {
-if (total !== null) {
-totalKnown = true;
-feedMeta.textContent = `${String(total).padStart(3, "0")} Artikel`;
-}
-})
-.catch(() => {});
-} else {
-const count = currentLang === "all" ? demoData().length : demoData().filter((a) => a.language === currentLang).length;
-totalKnown = true;
-feedMeta.textContent = `${String(count).padStart(3, "0")} Artikel`;
-}
-}
+  function loadTotalCount() {
+    if (configured) {
+      fetchTotalCount()
+        .then((total) => {
+          if (total !== null) {
+            totalKnown = true;
+            feedMeta.textContent = `${String(total).padStart(3, "0")} Artikel`;
+          }
+        })
+        .catch(() => {});
+    } else {
+      const count = currentLang === "all" ? demoData().length : demoData().filter((a) => a.language === currentLang).length;
+      totalKnown = true;
+      feedMeta.textContent = `${String(count).padStart(3, "0")} Artikel`;
+    }
+  }
 
-function setLang(lang) {
-if (lang === currentLang || loading) return;
-currentLang = lang;
-langButtons.forEach((btn) => {
-const isActive = btn.dataset.lang === lang;
-btn.classList.toggle("active", isActive);
-btn.setAttribute("aria-pressed", String(isActive));
-});
+  function setLang(lang) {
+    if (lang === currentLang || loading) return;
+    currentLang = lang;
+    langButtons.forEach((btn) => {
+      const isActive = btn.dataset.lang === lang;
+      btn.classList.toggle("active", isActive);
+      btn.setAttribute("aria-pressed", String(isActive));
+    });
 
-offset = 0;
-done = false;
-totalKnown = false;
-    feedList.innerHTML = SKELETON_HTML;
+    offset = 0;
+    done = false;
+    totalKnown = false;
     feedList.classList.add("is-refreshing");
-feedList.setAttribute("aria-busy", "true");
-feedMeta.textContent = "";
+    feedList.setAttribute("aria-busy", "true");
+    feedMeta.textContent = "";
 
-loadTotalCount();
-loadMore();
-}
+    loadTotalCount();
+    loadMore();
+  }
 
-langButtons.forEach((btn) => btn.addEventListener("click", () => setLang(btn.dataset.lang)));
+  langButtons.forEach((btn) => btn.addEventListener("click", () => setLang(btn.dataset.lang)));
 
-loadTotalCount();
-loadMore();
+  loadTotalCount();
+  loadMore();
 })();
 </script>
 </body>
