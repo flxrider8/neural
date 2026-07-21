@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Anmelden — Neural</title>
+<meta name="robots" content="noindex, follow" />
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<meta name="theme-color" content="#e00020">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+:root {
+  --bg: #fafafa; --bg-elev: #ffffff; --ink: #14141a; --ink-2: #5c5c68; --ink-3: #9797a3;
+  --line: rgba(20, 20, 26, 0.09); --accent: #e00020; --accent-strong: #b8001a; --accent-ink: #ffffff;
+  --radius-sm: 10px; --radius-lg: 22px;
+  --shadow: 0 1px 2px rgba(20, 20, 30, 0.04), 0 10px 30px rgba(20, 20, 30, 0.06);
+  --shadow-hover: 0 4px 10px rgba(20, 20, 30, 0.06), 0 20px 48px rgba(20, 20, 30, 0.12);
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Consolas, monospace;
+  --container: clamp(20px, 5vw, 64px);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0b0b0e; --bg-elev: #17171c; --ink: #f4f4f6; --ink-2: #a6a6b0; --ink-3: #6c6c76;
+    --line: rgba(244, 244, 246, 0.1); --accent: #ff4757; --accent-strong: #ff707c;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 10px 30px rgba(0, 0, 0, 0.35);
+    --shadow-hover: 0 4px 10px rgba(0, 0, 0, 0.35), 0 20px 48px rgba(0, 0, 0, 0.5);
+  }
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { overflow-x: hidden; width: 100%; }
+body {
+  font-family: var(--font); background: var(--bg); color: var(--ink); line-height: 1.5;
+  -webkit-font-smoothing: antialiased; overflow-x: hidden; width: 100%; min-height: 100vh;
+  display: flex; flex-direction: column;
+}
+img { max-width: 100%; display: block; }
+
+.site-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px var(--container); border-bottom: 1px solid var(--line);
+}
+.logo { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.05rem; color: var(--ink); text-decoration: none; }
+.logo-mark {
+  display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 9px;
+  font-family: var(--mono); font-size: 0.85rem; font-weight: 700; color: var(--accent-ink); background: var(--accent);
+}
+.nav-back {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--mono); font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--ink-2); text-decoration: none; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line);
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.nav-back:hover { color: var(--accent); border-color: var(--accent); }
+
+main { flex: 1; display: flex; align-items: center; justify-content: center; padding: clamp(32px, 8vh, 72px) var(--container); }
+
+.auth-card {
+  width: 100%; max-width: 420px; background: var(--bg-elev); border: 1px solid var(--line);
+  border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: clamp(28px, 5vw, 40px);
+}
+.auth-card.wide { max-width: 480px; }
+
+.view { display: none; }
+.view.active { display: block; animation: view-in 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes view-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+}
+
+.auth-kicker {
+  font-family: var(--mono); font-size: 0.72rem; font-weight: 500; color: var(--accent);
+  text-transform: uppercase; letter-spacing: 0.12em; display: block; margin-bottom: 10px;
+}
+.auth-title { font-size: clamp(1.5rem, 4vw, 1.9rem); font-weight: 800; letter-spacing: -0.02em; margin-bottom: 8px; }
+.auth-lead { color: var(--ink-2); font-size: 0.94rem; margin-bottom: 26px; line-height: 1.55; }
+
+.tabs { display: flex; gap: 4px; padding: 4px; background: var(--bg); border: 1px solid var(--line); border-radius: 999px; margin-bottom: 24px; }
+.tab-btn {
+  flex: 1; font-family: var(--font); font-size: 0.86rem; font-weight: 700; padding: 9px 12px; border-radius: 999px;
+  border: none; background: transparent; color: var(--ink-2); cursor: pointer; transition: background 0.2s ease, color 0.2s ease;
+}
+.tab-btn.active { background: var(--accent); color: #fff; }
+
+.field { margin-bottom: 18px; }
+.field label {
+  display: block; font-family: var(--mono); font-size: 0.72rem; font-weight: 600; color: var(--ink-2);
+  text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px;
+}
+.field input {
+  width: 100%; font-family: var(--font); font-size: 0.98rem; color: var(--ink); background: var(--bg);
+  border: 1.5px solid var(--line); border-radius: var(--radius-sm); padding: 13px 15px; transition: border-color 0.2s ease;
+}
+.field input:focus { outline: none; border-color: var(--accent); }
+.field-hint { font-size: 0.8rem; color: var(--ink-3); margin-top: 6px; }
+
+.avatar-row { display: flex; align-items: center; gap: 16px; margin-bottom: 18px; }
+.avatar-preview {
+  width: 64px; height: 64px; border-radius: 50%; background: var(--bg); border: 1.5px solid var(--line);
+  overflow: hidden; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-weight: 700; font-size: 1.3rem; color: var(--ink-3);
+}
+.avatar-preview img { width: 100%; height: 100%; object-fit: cover; }
+.avatar-controls { flex: 1; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.file-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: fit-content;
+  font-family: var(--font); font-size: 0.82rem; font-weight: 600; color: var(--ink); background: var(--bg);
+  border: 1.5px solid var(--line); border-radius: 999px; padding: 8px 16px; cursor: pointer; transition: border-color 0.2s ease;
+}
+.file-btn:hover { border-color: var(--accent); }
+.file-btn input[type="file"] { display: none; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px; width: 100%;
+  font-family: var(--font); font-size: 0.96rem; font-weight: 700; padding: 14px 20px; border-radius: 999px;
+  cursor: pointer; border: none; transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.25s ease;
+  min-height: 48px;
+}
+.btn-primary { background: var(--accent); color: #fff; box-shadow: 0 10px 26px color-mix(in srgb, var(--accent) 30%, transparent); }
+.btn-primary:hover { background: var(--accent-strong); transform: translateY(-1px); }
+.btn-primary:active { transform: translateY(0) scale(0.98); }
+.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.btn-ghost { background: var(--bg); color: var(--ink); border: 1.5px solid var(--line); }
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+.btn-danger-ghost { background: var(--bg); color: var(--accent); border: 1.5px solid color-mix(in srgb, var(--accent) 35%, var(--line)); }
+.btn-danger-ghost:hover { background: color-mix(in srgb, var(--accent) 8%, var(--bg)); }
+
+.btn-row { display: flex; flex-direction: column; gap: 10px; margin-top: 22px; }
+
+.error-msg {
+  display: none; background: color-mix(in srgb, var(--accent) 8%, var(--bg-elev)); border: 1px solid color-mix(in srgb, var(--accent) 25%, var(--line));
+  color: var(--accent); font-size: 0.86rem; border-radius: var(--radius-sm); padding: 11px 14px; margin-bottom: 18px; line-height: 1.5;
+}
+.error-msg.visible { display: block; }
+.success-msg {
+  display: none; background: color-mix(in srgb, #1fd463 10%, var(--bg-elev)); border: 1px solid color-mix(in srgb, #1fd463 30%, var(--line));
+  color: #0e8f45; font-size: 0.86rem; border-radius: var(--radius-sm); padding: 11px 14px; margin-bottom: 18px; line-height: 1.5;
+}
+@media (prefers-color-scheme: dark) { .success-msg { color: #4ce38a; } }
+.success-msg.visible { display: block; }
+
+.verify-icon {
+  width: 56px; height: 56px; border-radius: 50%; background: color-mix(in srgb, var(--accent) 10%, var(--bg-elev));
+  display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: var(--accent);
+}
+
+.dash-header { display: flex; align-items: center; gap: 16px; margin-bottom: 28px; }
+.dash-avatar {
+  width: 56px; height: 56px; border-radius: 50%; border: 1.5px solid var(--line); overflow: hidden; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; background: var(--bg);
+  font-family: var(--mono); font-weight: 700; font-size: 1.15rem; color: var(--ink-3);
+}
+.dash-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.dash-role {
+  display: inline-block; margin-top: 4px; font-family: var(--mono); font-size: 0.68rem; font-weight: 600;
+  color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; background: color-mix(in srgb, var(--accent) 10%, transparent);
+  padding: 2px 9px; border-radius: 999px;
+}
+.dash-name { font-size: 1.2rem; font-weight: 800; letter-spacing: -0.01em; }
+
+.divider { border: none; border-top: 1px solid var(--line); margin: 24px 0; }
+
+.link-btn {
+  background: none; border: none; color: var(--accent); font-family: var(--font); font-size: 0.86rem; font-weight: 600;
+  cursor: pointer; padding: 0; text-decoration: underline; text-underline-offset: 3px;
+}
+
+.spinner {
+  width: 16px; height: 16px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.35); border-top-color: #fff;
+  animation: spin 0.7s linear infinite; flex-shrink: 0;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+a:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a href="../index.html" class="logo" aria-label="Neural — Startseite">
+    <span class="logo-mark" aria-hidden="true">N</span>
+    Neural
+  </a>
+  <a href="../index.html" class="nav-back">← Zurück</a>
+</header>
+
+<main>
+  <div class="auth-card" id="authCard">
+
+    <!-- VIEW: Login / Signup -->
+    <section class="view" id="view-auth">
+      <span class="auth-kicker">Konto</span>
+      <h1 class="auth-title">Willkommen bei Neural</h1>
+      <p class="auth-lead">Melde dich an oder erstelle ein kostenloses Konto.</p>
+
+      <div class="tabs" role="tablist">
+        <button type="button" class="tab-btn active" id="tabLogin" role="tab" aria-selected="true">Anmelden</button>
+        <button type="button" class="tab-btn" id="tabSignup" role="tab" aria-selected="false">Registrieren</button>
+      </div>
+
+      <div class="error-msg" id="authError" role="alert"></div>
+      <div class="success-msg" id="authSuccess" role="status"></div>
+
+      <form id="loginForm">
+        <div class="field">
+          <label for="loginEmail">E-Mail</label>
+          <input type="email" id="loginEmail" autocomplete="email" required />
+        </div>
+        <div class="field" style="margin-bottom: 8px;">
+          <label for="loginPassword">Passwort</label>
+          <input type="password" id="loginPassword" autocomplete="current-password" required />
+        </div>
+        <div class="btn-row">
+          <button type="submit" class="btn btn-primary" id="loginSubmit">
+            <span class="btn-label">Anmelden</span>
+          </button>
+        </div>
+      </form>
+
+      <form id="signupForm" style="display: none;">
+        <div class="field">
+          <label for="signupEmail">E-Mail</label>
+          <input type="email" id="signupEmail" autocomplete="email" required />
+        </div>
+        <div class="field">
+          <label for="signupPassword">Passwort</label>
+          <input type="password" id="signupPassword" autocomplete="new-password" minlength="8" required />
+          <p class="field-hint">Mindestens 8 Zeichen.</p>
+        </div>
+        <div class="btn-row">
+          <button type="submit" class="btn btn-primary" id="signupSubmit">
+            <span class="btn-label">Konto erstellen</span>
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- VIEW: E-Mail-Verifizierung ausstehend -->
+    <section class="view" id="view-verify">
+      <div class="verify-icon" aria-hidden="true">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none"><path d="M3 7l9 6 9-6M4 5h16a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <span class="auth-kicker" style="text-align:center; display:block;">Fast geschafft</span>
+      <h1 class="auth-title" style="text-align:center;">Bestätige deine E-Mail</h1>
+      <p class="auth-lead" style="text-align:center;">
+        Wir haben einen Bestätigungslink an <strong id="verifyEmailDisplay">deine E-Mail-Adresse</strong> geschickt.
+        Klick auf den Link in der E-Mail, um dein Konto zu aktivieren.
+      </p>
+      <div class="btn-row">
+        <button type="button" class="btn btn-ghost" id="backToAuthBtn">← Zurück zur Anmeldung</button>
+      </div>
+    </section>
+
+    <!-- VIEW: Onboarding (Profil vervollständigen) -->
+    <section class="view" id="view-onboarding">
+      <span class="auth-kicker">Letzter Schritt</span>
+      <h1 class="auth-title">Profil vervollständigen</h1>
+      <p class="auth-lead">E-Mail bestätigt. Gib deinen Anzeigenamen ein und (optional) ein Profilbild.</p>
+
+      <div class="error-msg" id="onboardingError" role="alert"></div>
+
+      <form id="onboardingForm">
+        <div class="avatar-row">
+          <div class="avatar-preview" id="onboardingAvatarPreview">?</div>
+          <div class="avatar-controls">
+            <label class="file-btn">
+              <input type="file" id="onboardingAvatarFile" accept="image/png,image/jpeg,image/webp,image/gif" />
+              Bild hochladen
+            </label>
+            <input type="url" id="onboardingAvatarUrl" placeholder="…oder Bild-URL einfügen" style="font-family:var(--font); font-size:0.85rem; padding:9px 12px; border:1.5px solid var(--line); border-radius:var(--radius-sm); background:var(--bg); color:var(--ink);" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="onboardingName">Anzeigename</label>
+          <input type="text" id="onboardingName" maxlength="40" required />
+        </div>
+        <div class="btn-row">
+          <button type="submit" class="btn btn-primary" id="onboardingSubmit">
+            <span class="btn-label">Profil speichern</span>
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- VIEW: Dashboard -->
+    <section class="view" id="view-dashboard">
+      <div class="dash-header">
+        <div class="dash-avatar" id="dashAvatar">?</div>
+        <div>
+          <div class="dash-name" id="dashName">—</div>
+          <span class="dash-role" id="dashRole" style="display:none;">Admin</span>
+        </div>
+      </div>
+
+      <div class="error-msg" id="dashboardError" role="alert"></div>
+      <div class="success-msg" id="dashboardSuccess" role="status"></div>
+
+      <form id="dashboardForm">
+        <div class="avatar-row">
+          <div class="avatar-preview" id="dashAvatarPreview">?</div>
+          <div class="avatar-controls">
+            <label class="file-btn">
+              <input type="file" id="dashAvatarFile" accept="image/png,image/jpeg,image/webp,image/gif" />
+              Neues Bild hochladen
+            </label>
+            <input type="url" id="dashAvatarUrl" placeholder="…oder Bild-URL einfügen" style="font-family:var(--font); font-size:0.85rem; padding:9px 12px; border:1.5px solid var(--line); border-radius:var(--radius-sm); background:var(--bg); color:var(--ink);" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="dashDisplayName">Anzeigename</label>
+          <input type="text" id="dashDisplayName" maxlength="40" required />
+        </div>
+        <div class="btn-row">
+          <button type="submit" class="btn btn-primary" id="dashboardSubmit">
+            <span class="btn-label">Änderungen speichern</span>
+          </button>
+        </div>
+      </form>
+
+      <hr class="divider" />
+      <button type="button" class="btn btn-danger-ghost" id="logoutBtn">Abmelden</button>
+    </section>
+
+  </div>
+</main>
+
+<script>
+(() => {
+"use strict";
+const SUPABASE_URL = "https://xbrxhzampuhjyvyhntiv.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhicnhoemFtcHVoanl2eWhudGl2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwMzY2OTEsImV4cCI6MjA5OTYxMjY5MX0.7aq734Vwp-nKzNsLvQPgYAMpWtLp6oGDzrVCjBhi-fc";
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const views = {
+  auth: document.getElementById("view-auth"),
+  verify: document.getElementById("view-verify"),
+  onboarding: document.getElementById("view-onboarding"),
+  dashboard: document.getElementById("view-dashboard"),
+};
+function showView(name) {
+  Object.values(views).forEach((v) => v.classList.remove("active"));
+  views[name].classList.add("active");
+}
+
+function initials(name) {
+  return (name || "?").trim().slice(0, 1).toUpperCase() || "?";
+}
+function renderAvatarInto(el, url, name) {
+  el.innerHTML = "";
+  if (url) {
+    const img = document.createElement("img");
+    img.src = url;
+    img.alt = "";
+    img.onerror = () => { el.innerHTML = initials(name); };
+    el.appendChild(img);
+  } else {
+    el.textContent = initials(name);
+  }
+}
+
+/* ---------- Fehlermeldungen ---------- */
+const AUTH_ERROR_MAP = {
+  "Invalid login credentials": "E-Mail oder Passwort ist falsch.",
+  "User already registered": "Für diese E-Mail existiert bereits ein Konto. Bitte anmelden.",
+  "Email not confirmed": "Bitte bestätige zuerst deine E-Mail-Adresse (Link in deinem Postfach).",
+  "Password should be at least 6 characters": "Das Passwort muss mindestens 6 Zeichen lang sein.",
+};
+function translateError(err) {
+  if (!err) return "Etwas ist schiefgelaufen. Bitte versuch's nochmal.";
+  return AUTH_ERROR_MAP[err.message] || err.message || "Etwas ist schiefgelaufen. Bitte versuch's nochmal.";
+}
+function setError(el, msg) {
+  el.textContent = msg;
+  el.classList.toggle("visible", !!msg);
+}
+function setSuccess(el, msg) {
+  el.textContent = msg;
+  el.classList.toggle("visible", !!msg);
+}
+
+function setBusy(btn, busy, label) {
+  btn.disabled = busy;
+  const labelEl = btn.querySelector(".btn-label");
+  if (busy) {
+    btn.dataset.originalLabel = labelEl.textContent;
+    labelEl.textContent = label || "Bitte warten…";
+  } else {
+    labelEl.textContent = btn.dataset.originalLabel || labelEl.textContent;
+  }
+}
+
+/* ---------- Avatar-Upload ---------- */
+async function uploadAvatar(userId, file) {
+  const ext = (file.name.split(".").pop() || "png").toLowerCase();
+  const path = `${userId}/avatar-${Date.now()}.${ext}`;
+  const { error } = await supabase.storage.from("avatars").upload(path, file, { upsert: true, cacheControl: "3600" });
+  if (error) throw error;
+  const { data } = supabase.storage.from("avatars").getPublicUrl(path);
+  return data.publicUrl;
+}
+
+/* ---------- Tabs (Login / Signup) ---------- */
+const tabLogin = document.getElementById("tabLogin");
+const tabSignup = document.getElementById("tabSignup");
+const loginForm = document.getElementById("loginForm");
+const signupForm = document.getElementById("signupForm");
+const authError = document.getElementById("authError");
+const authSuccess = document.getElementById("authSuccess");
+
+function switchTab(which) {
+  setError(authError, "");
+  setSuccess(authSuccess, "");
+  const isLogin = which === "login";
+  tabLogin.classList.toggle("active", isLogin);
+  tabSignup.classList.toggle("active", !isLogin);
+  tabLogin.setAttribute("aria-selected", String(isLogin));
+  tabSignup.setAttribute("aria-selected", String(!isLogin));
+  loginForm.style.display = isLogin ? "block" : "none";
+  signupForm.style.display = isLogin ? "none" : "block";
+}
+tabLogin.addEventListener("click", () => switchTab("login"));
+tabSignup.addEventListener("click", () => switchTab("signup"));
+
+loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  setError(authError, "");
+  const btn = document.getElementById("loginSubmit");
+  setBusy(btn, true, "Anmelden…");
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: document.getElementById("loginEmail").value.trim(),
+    password: document.getElementById("loginPassword").value,
+  });
+  setBusy(btn, false);
+  if (error) { setError(authError, translateError(error)); return; }
+  await loadProfileAndRoute(data.user);
+});
+
+signupForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  setError(authError, "");
+  const btn = document.getElementById("signupSubmit");
+  const email = document.getElementById("signupEmail").value.trim();
+  setBusy(btn, true, "Konto wird erstellt…");
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password: document.getElementById("signupPassword").value,
+    options: { emailRedirectTo: window.location.origin + window.location.pathname },
+  });
+  setBusy(btn, false);
+  if (error) { setError(authError, translateError(error)); return; }
+
+  if (data.session) {
+    // Projekt hat E-Mail-Bestätigung deaktiviert -> direkt eingeloggt
+    await loadProfileAndRoute(data.user);
+  } else {
+    document.getElementById("verifyEmailDisplay").textContent = email;
+    showView("verify");
+  }
+});
+
+document.getElementById("backToAuthBtn").addEventListener("click", () => {
+  switchTab("login");
+  showView("auth");
+});
+
+/* ---------- Onboarding ---------- */
+const onboardingForm = document.getElementById("onboardingForm");
+const onboardingAvatarPreview = document.getElementById("onboardingAvatarPreview");
+const onboardingAvatarUrl = document.getElementById("onboardingAvatarUrl");
+const onboardingAvatarFile = document.getElementById("onboardingAvatarFile");
+const onboardingError = document.getElementById("onboardingError");
+
+onboardingAvatarUrl.addEventListener("input", () => {
+  renderAvatarInto(onboardingAvatarPreview, onboardingAvatarUrl.value.trim(), document.getElementById("onboardingName").value);
+});
+onboardingAvatarFile.addEventListener("change", () => {
+  const file = onboardingAvatarFile.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => renderAvatarInto(onboardingAvatarPreview, reader.result, "");
+  reader.readAsDataURL(file);
+});
+
+onboardingForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  setError(onboardingError, "");
+  const btn = document.getElementById("onboardingSubmit");
+  setBusy(btn, true, "Speichert…");
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    let avatarUrl = onboardingAvatarUrl.value.trim() || null;
+    if (onboardingAvatarFile.files[0]) {
+      avatarUrl = await uploadAvatar(user.id, onboardingAvatarFile.files[0]);
+    }
+    const { error } = await supabase.from("profiles").update({
+      display_name: document.getElementById("onboardingName").value.trim(),
+      avatar_url: avatarUrl,
+      onboarding_completed: true,
+    }).eq("id", user.id);
+    if (error) throw error;
+    const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single();
+    renderDashboard(profile, user);
+    showView("dashboard");
+  } catch (err) {
+    setError(onboardingError, translateError(err));
+  } finally {
+    setBusy(btn, false);
+  }
+});
+
+/* ---------- Dashboard ---------- */
+const dashboardForm = document.getElementById("dashboardForm");
+const dashAvatarPreview = document.getElementById("dashAvatarPreview");
+const dashAvatarUrl = document.getElementById("dashAvatarUrl");
+const dashAvatarFile = document.getElementById("dashAvatarFile");
+const dashboardError = document.getElementById("dashboardError");
+const dashboardSuccess = document.getElementById("dashboardSuccess");
+
+dashAvatarUrl.addEventListener("input", () => {
+  renderAvatarInto(dashAvatarPreview, dashAvatarUrl.value.trim(), document.getElementById("dashDisplayName").value);
+});
+dashAvatarFile.addEventListener("change", () => {
+  const file = dashAvatarFile.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => renderAvatarInto(dashAvatarPreview, reader.result, "");
+  reader.readAsDataURL(file);
+});
+
+function renderDashboard(profile, user) {
+  document.getElementById("dashName").textContent = profile?.display_name || user.email;
+  renderAvatarInto(document.getElementById("dashAvatar"), profile?.avatar_url, profile?.display_name);
+  renderAvatarInto(dashAvatarPreview, profile?.avatar_url, profile?.display_name);
+  document.getElementById("dashDisplayName").value = profile?.display_name || "";
+  dashAvatarUrl.value = profile?.avatar_url || "";
+  const roleBadge = document.getElementById("dashRole");
+  if (profile?.role === "admin") {
+    roleBadge.style.display = "inline-block";
+    roleBadge.textContent = "Admin";
+  } else {
+    roleBadge.style.display = "none";
+  }
+}
+
+dashboardForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  setError(dashboardError, "");
+  setSuccess(dashboardSuccess, "");
+  const btn = document.getElementById("dashboardSubmit");
+  setBusy(btn, true, "Speichert…");
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+    let avatarUrl = dashAvatarUrl.value.trim() || null;
+    if (dashAvatarFile.files[0]) {
+      avatarUrl = await uploadAvatar(user.id, dashAvatarFile.files[0]);
+    }
+    const { error } = await supabase.from("profiles").update({
+      display_name: document.getElementById("dashDisplayName").value.trim(),
+      avatar_url: avatarUrl,
+    }).eq("id", user.id);
+    if (error) throw error;
+    const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single();
+    renderDashboard(profile, user);
+    setSuccess(dashboardSuccess, "Gespeichert.");
+    dashAvatarFile.value = "";
+  } catch (err) {
+    setError(dashboardError, translateError(err));
+  } finally {
+    setBusy(btn, false);
+  }
+});
+
+document.getElementById("logoutBtn").addEventListener("click", async () => {
+  await supabase.auth.signOut();
+  switchTab("login");
+  showView("auth");
+});
+
+/* ---------- Routing ---------- */
+async function loadProfileAndRoute(user) {
+  const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single();
+  if (!profile || !profile.onboarding_completed) {
+    document.getElementById("onboardingName").value = profile?.display_name || "";
+    renderAvatarInto(onboardingAvatarPreview, profile?.avatar_url, profile?.display_name);
+    showView("onboarding");
+  } else {
+    renderDashboard(profile, user);
+    showView("dashboard");
+  }
+}
+
+async function init() {
+  // Fehler aus dem E-Mail-Link (z.B. abgelaufen) anzeigen, falls vorhanden
+  const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+  const errDesc = hashParams.get("error_description");
+  if (errDesc) setError(authError, decodeURIComponent(errDesc.replace(/\+/g, " ")));
+
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session) {
+    await loadProfileAndRoute(session.user);
+  } else {
+    showView("auth");
+  }
+}
+
+supabase.auth.onAuthStateChange((event) => {
+  if (event === "SIGNED_OUT") {
+    switchTab("login");
+    showView("auth");
+  }
+});
+
+init();
+})();
+</script>
+</body>
+</html>
